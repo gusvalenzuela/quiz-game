@@ -16,35 +16,27 @@ var timeElapsed = 0
 var timePenalty = 0
 var currentSet = []
 var interval
-var q       // this might not work 100%
-// function wait(){w = setInterval(function(){},250)}
+var score   
+var q     
+var t   // the ultimate time displayed and later stored as score
+// function wait(){w = setInterval(function(){},250)} // at one point i wanted to add a splash between questions
 
 init()
 
 function init(){
     const qs = questions
     clear()
-    brandLink.click()       // clicking button to open the modal which house the welcome message and play button
-    // quizTimeDisplay.textContent = timer
+    brandLink.click()       // clicking button to open the modal which houses the welcome message and play button (need to move the click elsewhere)
 
     // randomizing the order of questions shown each time the page is loaded
     for(i=qs.length;i>0;i--){
         var r = Math.floor(Math.random()*qs.length) // generate random number 0-length of Questions Object
-        currentSet.push(qs[r])
-        qs.splice([r], 1)
+        currentSet.push(qs[r])      // pushing question from Questions Object at random (r) index to CurrentSet var
+        qs.splice([r], 1)           // removing question from working set (until there are none left to grab)
     }
+    console.log(currentSet)
 }
-function randomize(arg1, arg2){
-
-    for(i=qx.length;i>0;i--){
-        var r = Math.floor(Math.random()*qx.length) // generate random number 0-length of argument (question/object set)
-        genQx.push(qx[r])
-        qx.splice([r], 1)
-        newQx = genQx
-    }
-}
-
-
+// function to clear time and text displayed 
 function clear(){
     timePenalty = 0
     timeElapsed = 0
@@ -52,10 +44,9 @@ function clear(){
     answerBtns.textContent = ""
     quizTimeDisplay.textContent = ""
 }
-
 function startTimer(){  
     interval = setInterval(function(){   
-        var t = (timer - timeElapsed) - timePenalty     // subtracting from <15 results in immediate stop
+        t = (timer - timeElapsed) - timePenalty   
         if(t >= 0){
             timeElapsed++
             quizTimeDisplay.textContent = t
@@ -63,32 +54,36 @@ function startTimer(){
         } 
     }, 1000)
 }
-
-
-function changeQuestion(){      
-    var rand = Math.floor(Math.random()*questions.length) // generate random number 0-4
-    q = currentSet[rand]
+function changeQuestion(){  
+    var rand = Math.floor(Math.random()*questions.length) // generate random number 0 - questions length
+    q = currentSet[rand]    // store random selected 
     qc = q.choices
     qcToDisplay = []
-    console.log(`length of current question set is: ` + currentSet.length)
+    // console.log(`length of current question set is: ` + currentSet.length)
+    console.log(q)
 
-
-    // display randomly chosen question title 
-    questionText.textContent = q.title    
-
-    // randomize the order of "choices"
-    for(i=qc.length;i>0;i--){
-        var r = Math.floor(Math.random()*qc.length) // generate random number from 0 - length of choices in a Question object
-        qcToDisplay.push(qc[r])
-        qc.splice([r], 1)
-    }
+    // i'm missing something obvious in this conditional but i haven't figured it out
+    if(currentSet.length > 1){
+        // display randomly chosen question title 
+        questionText.textContent = q.title    
     
-    // display the randomized order of "choices"
-    for(i=0;i<qcToDisplay.length;i++){
-        answerBtns[i].textContent = qcToDisplay[i]
-        // answerBtns[i].setAttribute(`class`, `btn btn-light rounded-0;`)
-    }        
-    currentSet.splice([rand],1)  
+        // randomize the order of "choices"
+        for(i=qc.length;i>0;i--){
+            var r = Math.floor(Math.random()*qc.length) // generate random number from 0 - length of choices in a Question object
+            qcToDisplay.push(qc[r])
+            qc.splice([r], 1)
+        }
+        
+        // display the randomized order of "choices"
+        for(i=0;i<qcToDisplay.length;i++){
+            answerBtns[i].textContent = qcToDisplay[i]
+        }            
+        currentSet.splice([rand],1)  
+    } else {
+        clearInterval(interval)
+        score = t
+        alert(`GAME OVER\nYour Score is: ` + score)
+    }
 }
 function playQuiz() {
     clear()
@@ -127,12 +122,20 @@ answerGroup.addEventListener(`click`, gradeAnswer)
 // pause, because
 highScoreLink.addEventListener(`click`, pauseTimer)
 
+
+// ====
+// WIP 
+// ====
+
 /*
-function randomize(qx){
+// this doesn't work as i'd like it to
+
+function randomize(arg1, arg2){
     for(i=qx.length;i>0;i--){
-        var r = Math.floor(Math.random()*qx.length) // generate random number 0-length of argument
-        currentSet.push(qx[r])
+        var r = Math.floor(Math.random()*qx.length) // generate random number 0-length of argument (question/object set)
+        genQx.push(qx[r])
         qx.splice([r], 1)
+        newQx = genQx
     }
 }
     */
