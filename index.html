@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="./assets/css/style.css">
-    <title>⁉ Quiz-Down ⁉</title>
+    <title>⁉ Quiz-Down ⁉ | Home</title>
 </head>
 <body>
     <!-- Modal to be triggered by button js click -->
@@ -27,7 +27,7 @@
     </div> 
     <!-- navigation bar stickied to top  -->
     <nav class="navbar navbar-expand-lg navbar-danger bg-danger" id="navbar">
-        <a class="navbar-brand text-light" data-toggle="modal" data-target="#staticBackdrop" id="brand-link" href="#">QUIZ-DOWN!?</a>
+        <a class="navbar-brand text-light" data-toggle="modal" data-target="#staticBackdrop" id="brand-link" href="./index.html">QUIZ-DOWN!?</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -52,19 +52,15 @@
     </nav>
     <!-- container with main content  -->
     <div class="container pb-4">
-        <div class="row main-wrap">
-            <div class="col text-break text-wrap" id="container-col">
+        <div class="row main-wrap justify-content-center">
+            <div class="col-8 text-break text-wrap" id="container-col">
                 <div class="row mb-2 text-center justify-content-center">
-                    <p class="col-12 time-display display-4" id="time-display"></p>
+                    <p class="col-12 time-display display-4" id="time-display">00</p>
                     <p class="col-12 question text-grv" id="question-text"></p>
                 </div>
                 <div class="row mb-2 text-center">
                     <p class="col-12 display-4" id="grade-display"></p>
                     <div class="col-12 btn-group-vertical p-0 answer-group" role="group" aria-label="answer-group" id="answer-group">
-                        <button type="button" class="btn-grv rounded-0" id="answer-0"></button>
-                        <button type="button" class="btn-grv rounded-0" id="answer-1"></button>
-                        <button type="button" class="btn-grv rounded-0" id="answer-2"></button>
-                        <button type="button" class="btn-grv rounded-0" id="answer-3"></button>
                     </div>
                 </div>
             </div>
