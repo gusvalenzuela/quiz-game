@@ -2,12 +2,9 @@ body, html{
     min-height: 100%;
     background: url(../images/what-the-hex-dark.png);
 }
-
-.btn-grv:hover {
-    text-decoration: none;
-    background: cornflowerblue;
+*{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
-
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
@@ -16,6 +13,20 @@ html {
 }
   body {
     margin-bottom: 60px; /* Margin bottom by footer height */
+}
+.btn-grv:hover {
+    text-decoration: none;
+    background: cornflowerblue;
+}
+/* misnomer, for now */
+.avg-scr-display{
+    font-size: 14px;
+}
+.bg-grv{
+    background: cornflowerblue;
+}
+.top-wrap{
+    background: rgb(100,149,237, .42)
 }
 .footer {
     position: absolute;
@@ -26,7 +37,14 @@ html {
     background-color: transparent;
 }
 .text-grv {
-    color: cornflowerblue;
+    color: wheat;
+}
+.top-row{
+    color: wheat;
+    font-size: 36px;
+}
+.top-row-center{
+    font-size: 18px;
 }
 .btn-grv{
     width: 100%;
@@ -39,11 +57,15 @@ html {
 .btn-grv:last-child{
     border-bottom: none;
 }
-
 .question {
-    font-size: 28px;
+    text-align: center;
+    font-size: 18px;
+    min-height: 75px;
 }
-
+.submit-button{
+    border: none;
+    text-decoration: none;
+}
 .time-display{
-    color: cornflowerblue;
+    color: wheat;
 }

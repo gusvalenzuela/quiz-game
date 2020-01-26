@@ -26,46 +26,46 @@
         </div>
     </div> 
     <!-- navigation bar stickied to top  -->
-    <nav class="navbar navbar-expand-lg navbar-danger bg-danger" id="navbar">
+    <nav class="navbar navbar-expand-lg bg-grv mb-4" id="navbar">
         <a class="navbar-brand text-light" data-toggle="modal" data-target="#staticBackdrop" id="brand-link" href="./index.html">QUIZ-DOWN!?</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
-        </button>
+        </button>        
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link text-light" href="#">Quiz <span class="sr-only">(current)</span></a>
+                <a class="nav-link text-dark" href="#">Quiz <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item" id="high-scores">
-                <a class="nav-link text-light" href="#">High Scores!</a>
+                <a class="nav-link text-light" href="#">High Scores!<span class="text-center avg-scr-display" id="avg-scr-display"></span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-light disabled" href="#">disabled</a>
             </li>
             </ul>
-          <!-- <span class="navbar-text"> -->
-              
-            <!-- time display here controlled with JS  -->
-            <!-- Avg Score: <p class="text-center avg-scr-display" id="avg-scr-display">0</p> -->
-          <!-- </span> -->
         </div>
     </nav>
     <!-- container with main content  -->
-    <div class="container pb-4">
+    <div class="container">
         <div class="row main-wrap justify-content-center">
-            <div class="col-8 text-break text-wrap" id="container-col">
-                <div class="row mb-2 text-center justify-content-center">
-                    <p class="col-12 time-display display-4" id="time-display">00</p>
-                    <p class="col-12 question text-grv" id="question-text"></p>
-                </div>
-                <div class="row mb-2 text-center">
-                    <p class="col-12 display-4" id="grade-display"></p>
-                    <div class="col-12 btn-group-vertical p-0 answer-group" role="group" aria-label="answer-group" id="answer-group">
+            <div class="col-10 col-6-md text-break text-wrap text-center top-wrap p-3" id="container-col">
+                <div class="row mb-2 justify-content-center">
+                    <div class="col top-row bg-grv" id="question-count"></div>
+                    <div class="col top-row-center" id="center-display">
+                        <div id="grade-display"></div>
+                        <div id="penalty-display"></div>
                     </div>
+                    <div class="col top-row bg-grv" id="time-display"></div>
                 </div>
+                <div class="row justify-content-between">
+                    <div class="col text-grv question align-items-center" id="question-text"></div>
+                </div>
+                <div class="row btn-group-vertical answer-group w-100" role="group" aria-label="answer-group" id="answer-group"></div>
+                <!-- <div class="col-12 display-4 py-2" id="grade-display"></div> -->
             </div>
         </div>
     </div>    
+
     <!-- footer  -->
     <footer class="footer">
         <div class="container text-center">

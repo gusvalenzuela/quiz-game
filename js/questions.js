@@ -25,11 +25,11 @@ var questions = [
     },
     {   title: `If you are a "lover of cats" you are: `,
         choices: [
-            `Felophile`,
-            `Ailurophile`,
-            `Ceraunophile`,
-            `Cynophile`],
-        answer: `Ailurophile`
+            `a Felophile`,
+            `an Ailurophile`,
+            `a Ceraunophile`,
+            `a Cynophile`],
+        answer: `an Ailurophile`
     },
     {   title: `Humans have 206 bones in their entire body; How many bones do cats have in theirs?`,
         choices: [

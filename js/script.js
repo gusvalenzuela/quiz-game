@@ -1,4 +1,4 @@
-const navAvgScoreDisplay = document.querySelector(`#avg-scr-display`)
+const navScoreDisplay = document.querySelector(`#avg-scr-display`)
 const quizTimeDisplay = document.querySelector(`#time-display`)
 const brandLink = document.querySelector(`#brand-link`)
 const highScoreLink = document.querySelector(`#high-scores`)
@@ -7,17 +7,36 @@ const gradeDisplay = document.querySelector(`#grade-display`)
 const playBtn = document.querySelector(`#play-button`)
 const contColumn = document.querySelector(`#container-col`)
 const navBar = document.querySelector(`#navbar`)
+const qCountDisplay = document.querySelector(`#question-count`)
+const centerDisplay = document.querySelector(`#center-display`)
+const penDisplay = document.querySelector(`#penalty-display`)
 // const closeBtn = document.querySelector(`#close-btn`)
 const questionText = document.querySelector(`#question-text`)
+const input = document.createElement(`input`)
+const button = document.createElement(`button`)
+// object for current and future user data
+var user = {
+    name: "",
+    initials: "",
+    scores: []
+}
+
+var userInput
 var answerBtns
-var timesPlayed = 0     // to show on navBar
+var submitBtn
+var qCount = 0
+// var timesPlayed = 0     // to show on navBar, maybe; it's classified
 var timer = 99
 var timeElapsed = 0
 var timePenalty = 0
+var correctCount = 0
+var incorrectCount = 0
+var score = timer
 var currentSet = []
-var currentChoicesSet = []
+// var currentChoicesSet = []
 var interval
-var score   
+var userAnswer
+var storedScores = [];
 var q     
 var t   // the ultimate time displayed and later stored as score
 // function wait(){w = setInterval(function(){},250)} // at one point i wanted to add a splash between questions
@@ -26,6 +45,17 @@ init()
 
 function init(){
     brandLink.click()       // clicking button to open the modal which houses the welcome message and play button (need to move the click elsewhere)
+    getLocalScores()
+}
+function getLocalScores(){
+    var localScores = localStorage.getItem(`stored-scores`)
+    console.log(localScores)
+    // storedScores = 
+    // find max of all stored scores in array
+    // var max = storedScores.reduce(function(a, b) {
+    //     return Math.max(a, b);
+    // });
+    // navScoreDisplay.textContent = ` (Your Highest: ` + max + `)`
 }
 // function to clear time and text displayed 
 function clear(){
@@ -33,35 +63,65 @@ function clear(){
     timeElapsed = 0
     questionText.textContent = ""
     answerBtns.textContent = ""
-    quizTimeDisplay.textContent = "00"
+    quizTimeDisplay.textContent = "100"
 }
 function startTimer(){  
     interval = setInterval(function(){   
-        t = (timer - timeElapsed) - timePenalty   
-        if(t >= 0){
+        t = (timer - timeElapsed) - timePenalty  
+
+        if(t > 0){
             timeElapsed++
             quizTimeDisplay.textContent = t
             // console.log(`time remaining: ` + t + ` - time elapsed: ` + timeElapsed + ` - penalty: ` + timePenalty)
-        } 
+        } else {
+            endGame()
+        }
+
+        // make the timer red when 10 seconds or under
+        if(t <= 10){
+            quizTimeDisplay.setAttribute(`style`, `color: red;`)
+        }
     }, 1000)
 }
 function generateBtns(){
+    // adding conditional to make sure it doesn't regenerate buttons when there are no questions left
+    if(currentSet.length > 0){
+        for(i=0;i<4;i++){
+            var btn = document.createElement(`button`)
+            btn.setAttribute(`type`, `button`)
+            btn.setAttribute(`class`, `col-12 btn-grv p-0`)
+            answerGroup.appendChild(btn)
+        }
     
-    for(i=0;i<4;i++){
-        var btn = document.createElement(`button`)
-        btn.setAttribute(`type`, `button`)
-        btn.setAttribute(`class`, `btn-grv`)
-        answerGroup.appendChild(btn)
+        answerBtns = answerGroup.querySelectorAll(`button`)
+
+    } else {
+        return
     }
-    answerBtns = answerGroup.querySelectorAll(`button`)
 }
 function clearBtns(){
     for(i=0;i<4;i++){
         answerBtns[i].remove()
     }
 }
-function changeQuestion(){ 
+function changeQuestion(){
+    console.log(`inside changeQuestion`)
+    console.log(`userAnswer is :` + userAnswer)
+    if(currentSet.length === 0){
+        // one last check and adding appropriate penalty to account for delay of endGame()
+        if(userAnswer === q.answer){
+            timePenalty--
+        } else {
+            timePenalty++
+        }
+        // delay to allow for score change
+        setTimeout(function(){
+            endGame()
+        }, 1000)
+    } 
 
+    qCount++
+    qCountDisplay.textContent = `Q#: ` + qCount 
     var rand = Math.floor(Math.random()*questions.length) // generate random number 0 - questions length
     q = currentSet[rand]    // store random selected 
     qc = q.choices
@@ -76,7 +136,6 @@ function changeQuestion(){
         qcToDisplay.push(qc[r])
         qc.splice([r], 1)
     }
-    console.log(`qctodisplay is : `+ qcToDisplay)
     
     // display the randomized order of "choices"
     for(i=0;i<qcToDisplay.length;i++){
@@ -94,46 +153,120 @@ function playQuiz() {
         currentSet.push(qs[r])      // pushing question from Questions Object at random (r) index to CurrentSet var
         qs.splice([r], 1)           // removing question from working set (until there are none left to grab)
     }
-
     console.log(`Let's play!`)
     generateBtns()
     clear()
     startTimer()
     changeQuestion()
-    
+}
+function rightAnswer(){
+    timePenalty = timePenalty - 10
+    correctCount++
+    gradeDisplay.setAttribute(`class`, `col p-0 text-success text-center`)
+    gradeDisplay.textContent = `Correct!`
+    penDisplay.setAttribute(`class`, `col p-0 text-success text-center`)
+    penDisplay.textContent = `+10sec`
+
+    // timeout interval to quickly clear the penalty notification
+    setTimeout(function(){
+        penDisplay.textContent = ``
+        gradeDisplay.textContent = ``
+    }, 1500)
+}
+function wrongAnswer(){
+    timePenalty = timePenalty + 15
+    incorrectCount++
+    // what if no penalty?
+    gradeDisplay.setAttribute(`class`, `col p-0 text-danger text-center`)
+    gradeDisplay.textContent = `Incorrect`
+    penDisplay.setAttribute(`class`, `col p-0 text-danger text-center`)
+    penDisplay.textContent = `-15sec`
+
+    // timeout interval to quickly clear the penalty notification
+    setTimeout(function(){
+        penDisplay.textContent = ``
+        gradeDisplay.textContent = ``
+    }, 1500)
+
 }
 function gradeAnswer(event){
+
     // event.preventDefault()
     var el = event.target
+    userAnswer = el.textContent
     console.log(`currentset length` + currentSet.length) 
 
-    // just checking if button - in case i change CSS
+
+    // just checking if button - in case i change CSS around it
     if(el.type === `button`){
-        if(currentSet.length === 0){
-            clearInterval(interval)
-            score = t
-            clearBtns()
-            answerGroup.remove()
-            gradeDisplay.remove()
-            quizTimeDisplay.textContent = `Your final score is: ` + score
-            questionText.textContent = `please enter your initials: `
-        } else if(el.textContent === q.answer){
-            gradeDisplay.textContent = `Correct!`
-            gradeDisplay.setAttribute(`class`, `col-12 lead text-success`)
+        // checking to see if the selected button's text matches the question's answer
+        if(userAnswer === q.answer){
+            rightAnswer() 
         } else {
-            gradeDisplay.textContent = `Incorrect`
-            gradeDisplay.setAttribute(`class`, `col-12 lead text-danger`)
-            // trying to avoid subtracting from <15 which stops the timer
-            if((timer - timeElapsed) >= 15){
-                timePenalty = timePenalty + 15
-            }
+            wrongAnswer()               
         }           
     } else {
         return
     }        
+
+    // after grading each answer we clear the buttons and generate new ones, to reset any formatting
     clearBtns()
     generateBtns()
+    // go on to the next question
     changeQuestion()
+  
+}
+function endGame(){
+    clearInterval(interval)
+    clearBtns()
+    answerGroup.remove()
+    gradeDisplay.remove()
+    qCountDisplay.remove()
+    centerDisplay.remove()
+
+    if(t < 0){
+        score = 0
+    } else {
+        score = t
+    }
+    
+    quizTimeDisplay.textContent = `Final score: ` + score
+    questionText.textContent = `please enter your initials: `
+    input.setAttribute(`type`, `text`)
+    input.setAttribute(`id`, `user-initials`)
+    input.setAttribute(`name`, `user-initials`)
+    button.setAttribute(`class`, `p-1`)
+    button.setAttribute(`type`, `button`)
+    button.setAttribute(`id`, `submit-button`)
+    button.textContent = `submit`
+    questionText.appendChild(input)
+    questionText.appendChild(button)
+    userInput = document.querySelector(`#user-initials`)
+    submitBtn = document.querySelector(`#submit-button`)
+}
+function submitInitials(e){
+    e.preventDefault()
+
+    var keycode = e.keyCode
+    // if keyup event is "enter" (keycode 13) then save input as initial and score in local storage
+    if(keycode === 13){
+        user.initials = userInput.value
+        console.log(`keycode is: `+ keycode)
+
+        // create a "thank you" confirmation p tag
+        var para = document.createElement(`p`)
+        // para.setAttribute(`class`, ``)
+        para.setAttribute(`id`, `user-confirmation`)
+        para.textContent = `Thank you for playing ` + user.initials + `!`
+        questionText.appendChild(para)
+        
+        // store initials in local storage
+        localStorage.setItem(`stored-initials`, user.initials)
+        
+        // store score in local storage array
+        storedScores.push(parseInt(score))
+        localStorage.setItem(`stored-scores`, JSON.stringify(storedScores))
+    } 
 }
 
 // listeners
@@ -142,6 +275,8 @@ brandLink.addEventListener(`click`, function(){
     window.location.reload(true);
 })
 answerGroup.addEventListener(`click`, gradeAnswer)
+input.addEventListener(`keyup`, submitInitials)
+// submitBtn.addEventListener(`click`, )
 
 // pause, because
 // highScoreLink.addEventListener(`click`, pauseTimer)
