@@ -162,10 +162,10 @@ function playQuiz() {
 function rightAnswer(){
     timePenalty = timePenalty - 10
     correctCount++
-    gradeDisplay.setAttribute(`class`, `col p-0 text-success text-center`)
+    gradeDisplay.setAttribute(`class`, `col p-0 text-success text-center font-weight-bold`)
     gradeDisplay.textContent = `Correct!`
-    penDisplay.setAttribute(`class`, `col p-0 text-success text-center`)
-    penDisplay.textContent = `+10sec`
+    penDisplay.setAttribute(`class`, `col p-0 text-success text-center font-weight-bold`)
+    penDisplay.textContent = `+10 sec`
 
     // timeout interval to quickly clear the penalty notification
     setTimeout(function(){
@@ -177,10 +177,10 @@ function wrongAnswer(){
     timePenalty = timePenalty + 15
     incorrectCount++
     // what if no penalty?
-    gradeDisplay.setAttribute(`class`, `col p-0 text-danger text-center`)
+    gradeDisplay.setAttribute(`class`, `col p-0 text-danger text-center font-weight-bold`)
     gradeDisplay.textContent = `Incorrect`
-    penDisplay.setAttribute(`class`, `col p-0 text-danger text-center`)
-    penDisplay.textContent = `-15sec`
+    penDisplay.setAttribute(`class`, `col p-0 text-danger text-center font-weight-bold`)
+    penDisplay.textContent = `-15 sec`
 
     // timeout interval to quickly clear the penalty notification
     setTimeout(function(){
@@ -257,7 +257,7 @@ function submitInitials(e){
         var para = document.createElement(`p`)
         // para.setAttribute(`class`, ``)
         para.setAttribute(`id`, `user-confirmation`)
-        para.textContent = `Thank you for playing ` + user.initials + `!`
+        para.textContent = `Thank you for playing, ` + user.initials.toUpperCase() + `!`
         questionText.appendChild(para)
         
         // store initials in local storage

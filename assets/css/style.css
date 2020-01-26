@@ -48,10 +48,10 @@ html {
 }
 .btn-grv{
     width: 100%;
-    height: 50px;
     text-decoration: none;
     border: none;
     border-bottom: 1px ridge black;
+    line-height: 50px;
     /* float: left; */
 }
 .btn-grv:last-child{
