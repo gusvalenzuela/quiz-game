@@ -48,11 +48,15 @@ function init(){
     getLocalScores()
 }
 function getLocalScores(){
-    // find max of all stored scores in array
-    var max = storedScores.reduce(function(a, b) {
-        return Math.max(a, b);
-    });
-    navScoreDisplay.textContent = ` (Your Highest: ` + max + `)`
+    if(storedScores === null){
+        storedScores = []
+    } else {
+        // find max of all stored scores in array
+        var max = storedScores.reduce(function(a, b) {
+            return Math.max(a, b);
+        });
+        navScoreDisplay.textContent = ` (Your Highest: ` + max + `)`
+    }
 }
 // function to clear time and text displayed 
 function clear(){
@@ -88,6 +92,8 @@ function generateBtns(){
             var btn = document.createElement(`button`)
             btn.setAttribute(`type`, `button`)
             btn.setAttribute(`class`, `col-12 btn-grv p-0`)
+            // bring back the clicking (pointer-event)
+            answerGroup.setAttribute(`class`,`row btn-group-vertical answer-group w-100`)
             answerGroup.appendChild(btn)
         }
         // assign variable to buttons in answerGroup div
@@ -161,6 +167,8 @@ function playQuiz() {
     changeQuestion()
 }
 function rightAnswer(){
+
+    answerGroup.setAttribute(`class`,`row btn-group-vertical answer-group w-100 disable-click`) // disable click with CSS class (gotta be a better way)
     timePenalty = timePenalty - 10      // add time for delay in gradeAnswer()
     correctCount++
     gradeDisplay.setAttribute(`class`, `col p-0 text-success text-center font-weight-bold`)
@@ -175,6 +183,7 @@ function rightAnswer(){
     }, 1500)
 }
 function wrongAnswer(){
+    answerGroup.setAttribute(`class`,`row btn-group-vertical answer-group w-100 disable-click`) // disable click with CSS class (gotta be a better way)
     timePenalty = timePenalty + 15      // add time for delay in gradeAnswer()
     incorrectCount++
     // what if no penalty?
@@ -194,11 +203,6 @@ function gradeAnswer(event){
     event.preventDefault()
     var el = event.target
     userAnswer = el.textContent
-
-    /*
-     * DO NOT GRADE IF ALREADY GRADED
-     * OR DISABLE CLICK
-     */
 
     // just checking if button - in case i change CSS around it
     if(el.type === `button`){
@@ -262,6 +266,27 @@ function endGame(){
     // questionText.appendChild(button)
     userInput = document.querySelector(`#user-initials`)
     submitBtn = document.querySelector(`#submit-button`)
+
+    // generateReportCard()     
+    
+    var div = document.createElement(`div`)
+    div.setAttribute(`class`,``)
+    div.setAttribute(`id`,`high-score-list`)
+    div.setAttribute(`class`,``)
+    div.textContent = `Previous Scores: `
+    questionText.appendChild(div)
+    var highScoreDiv = document.querySelector(`#high-score-list`)
+
+    // perhaps sort in descending order for display?
+    for(i=0;i<storedScores.length;i++){
+        var p = document.createElement(`p`)
+        p.setAttribute(`class`,`text-left`)
+        // p.setAttribute(`id`,``)                  // tie ID to index
+        p.textContent = `Score # ` + (parseInt([i]) + 1) + ` = ` + storedScores[i]
+        highScoreDiv.appendChild(p)
+    }
+
+    
 }
 function submitInitials(e){
     // e.preventDefault()
@@ -277,14 +302,15 @@ function submitInitials(e){
         // add conditional not to add p, scores, and initials if p already created
         
         var para = document.createElement(`p`)                                  // create a "thank you" confirmation p tag
-        para.setAttribute(`class`, ``)
+        para.setAttribute(`class`, `text-info`)
         para.setAttribute(`id`, `user-confirmation`)
         para.textContent = `Thank you for playing!`
-        questionText.appendChild(para)
+        questionText.prepend(para)                                         // prepending
         
         localStorage.setItem(`stored-initials`, user.initials)                  // store initials in local storage
         storedScores.push(parseInt(score))                                      // push score into working array storedScores
         localStorage.setItem(`stored-scores`, JSON.stringify(storedScores))     // store score in local storage array
+        console.log(`Your storedScores is: ` + storedScores)
     } 
 }
 

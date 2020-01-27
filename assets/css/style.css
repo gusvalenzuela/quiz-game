@@ -95,3 +95,6 @@ html {
 .time-display{
     color: #2F231C;
 }
+.disable-click{
+    pointer-events: none;
+}
