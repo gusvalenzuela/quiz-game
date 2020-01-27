@@ -1,5 +1,5 @@
 var questions = [
-    {   title: `While humans have 12 thoracic vertebrae, how many do cats have?`,
+    {   title: `Humans have 12 thoracic vertebrae (middle segment of spine), how many do cats have?`,
         choices: [
             `8`,
             `12`,
@@ -7,7 +7,7 @@ var questions = [
             `18`],
         answer: `13`
     },
-    {   title: `What was the real name of the American celebrity internet cat better known as "Grumpy Cat"?`,
+    {   title: `What was the real name of the American internet celebrity cat better known as "Grumpy Cat"?`,
         choices: [
             `Soy Sauce`,
             `Tardar Sauce`,
@@ -15,27 +15,27 @@ var questions = [
             `Kaptain Ketchup`],
         answer: `Tardar Sauce`
     },
-    {   title: `A group of kittens is called:`,
+    {   title: `A group of kittens is called a:`,
         choices: [
-            `a kindle`,
-            `a murder`,
-            `a flock`,
-            `a clowder`],
-        answer: `a kindle`
+            `kindle`,
+            `murder`,
+            `flock`,
+            `clowder`],
+        answer: `kindle`
     },
-    {   title: `If you are a "lover of cats" you are: `,
+    {   title: `A "lover of cats" would be also be known as:`,
         choices: [
-            `a Felophile`,
-            `an Ailurophile`,
-            `a Ceraunophile`,
-            `a Cynophile`],
-        answer: `an Ailurophile`
+            `a felophile`,
+            `an ailurophile`,
+            `a ceraunophile`,
+            `a cynophile`],
+        answer: `an ailurophile`
     },
-    {   title: `Humans have 206 bones in their entire body; How many bones do cats have in theirs?`,
+    {   title: `Cats have more bones in their entire body than humans do; how many bones do cats have?`,
         choices: [
-            `212`,
+            `150`,
             `303`,
-            `269`,
+            `400`,
             `244`],
         answer: `244`
     },
