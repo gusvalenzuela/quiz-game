@@ -1,4 +1,4 @@
-const navScoreDisplay = document.querySelector(`#avg-scr-display`)
+const navScoreDisplay = document.querySelector(`#hi-scr-display`)
 const quizTimeDisplay = document.querySelector(`#time-display`)
 const brandLink = document.querySelector(`#brand-link`)
 const highScoreLink = document.querySelector(`#high-scores`)
@@ -13,6 +13,8 @@ const penDisplay = document.querySelector(`#penalty-display`)
 // const closeBtn = document.querySelector(`#close-btn`)
 const questionText = document.querySelector(`#question-text`)
 const input = document.createElement(`input`)
+const inputSubmit = document.createElement(`input`)
+const inputText = document.createElement(`input`)
 const button = document.createElement(`button`)
 var userInput
 var answerBtns
@@ -26,13 +28,14 @@ var incorrectCount = 0
 var score = timer
 var currentSet = []
 var interval
-var userAnswer
+var userAnswer, hiScore, q, t;
 var correct 
-var q     
-var t   // the ultimate time displayed and later stored as score
+// var q     
+// var t   // the ultimate time displayed and later stored as score
 var submitBtn
 var submit = 0
 var storedScores = JSON.parse(localStorage.getItem(`stored-scores`))
+var storedInitials = JSON.parse(localStorage.getItem(`stored-initials`))
 
 // object for current and future user data
 var user = {
@@ -41,21 +44,35 @@ var user = {
     scores: []
 }
 
+// var storedInfo = {
+//     initials: [],
+//     scores: [],    
+// }
+
 init()
 
 function init(){
-    brandLink.click()       // clicking button to open the modal which houses the welcome message and play button (need to move the click elsewhere)
-    getLocalScores()
+    brandLink.click()       // clicking button to open the modal which houses the welcome message and play button (restart the game)
+    getLocalInfo()
 }
-function getLocalScores(){
+function getLocalInfo(){
+    
     if(storedScores === null){
         storedScores = []
     } else {
+        storedScores = storedScores
         // find max of all stored scores in array
-        var max = storedScores.reduce(function(a, b) {
+        hiScore = storedScores.reduce(function(a, b) {
             return Math.max(a, b);
         });
-        navScoreDisplay.textContent = ` (Your Highest: ` + max + `)`
+    }
+       
+    navScoreDisplay.textContent = `(Your Highest Score: ` + hiScore + `)`
+
+    if(storedInitials === null){
+        storedInitials = []
+    } else {
+        storedInitials = storedInitials
     }
 }
 // function to clear time and text displayed 
@@ -123,8 +140,7 @@ function changeQuestion(){
         setTimeout(function(){
             endGame()
         }, 1000)
-    } else {
-        
+    } else {        
         qCount++        // keep count of questions asked and display
         qCountDisplay.textContent = `Q:` + qCount 
 
@@ -169,7 +185,7 @@ function playQuiz() {
 function rightAnswer(){
 
     answerGroup.setAttribute(`class`,`row btn-group-vertical answer-group w-100 disable-click`) // disable click with CSS class (gotta be a better way)
-    timePenalty = timePenalty - 10      // add time for delay in gradeAnswer()
+    timePenalty = timePenalty - 11      // add time for delay in gradeAnswer()
     correctCount++
     gradeDisplay.setAttribute(`class`, `col p-0 text-success text-center font-weight-bold`)
     gradeDisplay.textContent = `Correct!`
@@ -184,7 +200,7 @@ function rightAnswer(){
 }
 function wrongAnswer(){
     answerGroup.setAttribute(`class`,`row btn-group-vertical answer-group w-100 disable-click`) // disable click with CSS class (gotta be a better way)
-    timePenalty = timePenalty + 15      // add time for delay in gradeAnswer()
+    timePenalty = timePenalty + 14      // add time for delay in gradeAnswer()
     incorrectCount++
     // what if no penalty?
     gradeDisplay.setAttribute(`class`, `col p-0 text-danger text-center font-weight-bold`)
@@ -226,6 +242,7 @@ function gradeAnswer(event){
     } else {
         return
     }        
+    // timeout of 1sec to display right/wrong answer to user (via button background color)
     setTimeout(function(){
         // after grading each answer we clear the buttons and generate new ones, to reset any formatting
         clearBtns()
@@ -236,7 +253,8 @@ function gradeAnswer(event){
     },1000)
   
 }
-function endGame(){
+function endGame(event){
+    // event.preventDefault()
     clearInterval(interval)
     clearBtns()
     answerGroup.remove()
@@ -251,47 +269,73 @@ function endGame(){
         score = t
     }
     
-    quizTimeDisplay.setAttribute(`style`, ``)
-    quizTimeDisplay.textContent = `Final score: ` + score
-    questionText.textContent = `please enter your initials: `
-    input.setAttribute(`type`, `text`)
-    input.setAttribute(`id`, `user-initials`)
-    input.setAttribute(`name`, `user-initials`)
-    input.setAttribute(`class`, `m-1`)
-    button.setAttribute(`class`, `m-1`)
-    button.setAttribute(`type`, `button`)
-    button.setAttribute(`id`, `submit-button`)
-    button.textContent = `submit`
-    questionText.appendChild(input)
+    quizTimeDisplay.setAttribute(`style`, `font-color: white;`)
+    quizTimeDisplay.textContent = `Final Score: ` + score
+    questionText.textContent = `Please enter your initials: `
+    inputText.setAttribute(`type`, `text`)
+    inputText.setAttribute(`style`, `text-transform: uppercase`)
+    inputText.setAttribute(`id`, `user-initials`)
+    inputText.setAttribute(`name`, `user-initials`)
+    inputText.setAttribute(`class`, `m-1 text-center`)
+    inputText.setAttribute(`maxlength`, `3`)
+    inputSubmit.setAttribute(`class`, `m-1`)
+    inputSubmit.setAttribute(`type`, `submit`)
+    inputSubmit.setAttribute(`id`, `submit-button`)
+    inputSubmit.setAttribute(`value`, `Submit`)
+    questionText.appendChild(inputText)
+    questionText.appendChild(inputSubmit)
+    // button.textContent = `submit`
     // questionText.appendChild(button)
     userInput = document.querySelector(`#user-initials`)
     submitBtn = document.querySelector(`#submit-button`)
 
-    // generateReportCard()     
+    submitBtn.addEventListener(`click`, function(e){
+        e.preventDefault()
+        alert(`Currently non-functional\nplease press "enter" on your keyboard to submit`)
+    })
     
+    // generateReportCard()     
+
+    hiScoreList()
+    
+}
+function hiScoreList(){
     var div = document.createElement(`div`)
     div.setAttribute(`class`,``)
     div.setAttribute(`id`,`high-score-list`)
-    div.setAttribute(`class`,``)
-    div.textContent = `Previous Scores: `
+    div.setAttribute(`class`,`p-2`)
+    div.textContent = `High Scores (earliest to latest): `
     questionText.appendChild(div)
     var highScoreDiv = document.querySelector(`#high-score-list`)
 
     // perhaps sort in descending order for display?
     for(i=0;i<storedScores.length;i++){
         var p = document.createElement(`p`)
-        p.setAttribute(`class`,`text-left`)
-        // p.setAttribute(`id`,``)                  // tie ID to index
-        p.textContent = `Score # ` + (parseInt([i]) + 1) + ` = ` + storedScores[i]
+        var icon = document.createElement(`i`)
+        p.setAttribute(`class`,`text-center m-1`)
+        p.setAttribute(`id`,`score-` + i)                  // tie ID to index
+        icon.setAttribute(`class`, `fa fa-close mx-2`)
+        // icon.setAttribute(`style`, `font-size:14px`)
+        icon.setAttribute(`id`, `close-icon-` + i)
+        icon.setAttribute(`title`, `close-icon`)
+        p.textContent = storedInitials[i] + ` - ` + storedScores[i]
         highScoreDiv.appendChild(p)
+        p.prepend(icon)
     }
 
-    
+    highScoreDiv.addEventListener(`click`, function(event){
+        event.preventDefault()
+        var el = event.target
+        console.log(`element id is: ` + el.id)
+        if(el.title === `close-icon`){
+            alert(`You'd like to delete this record, wouldn't you?`)
+        }
+    })
+
 }
 function submitInitials(e){
     // e.preventDefault()
-    user.initials = userInput.value
-    user.initials.toUpperCase
+    user.initials = userInput.value.toUpperCase()
     console.log(submit)
 
     var keycode = e.keyCode
@@ -302,15 +346,23 @@ function submitInitials(e){
         // add conditional not to add p, scores, and initials if p already created
         
         var para = document.createElement(`p`)                                  // create a "thank you" confirmation p tag
-        para.setAttribute(`class`, `text-info`)
+        para.setAttribute(`class`, `lead text-danger font-weight-bold`)
         para.setAttribute(`id`, `user-confirmation`)
         para.textContent = `Thank you for playing!`
-        questionText.prepend(para)                                         // prepending
+        questionText.prepend(para)                                              // prepending to not mess with hi-score running list
         
-        localStorage.setItem(`stored-initials`, user.initials)                  // store initials in local storage
+        //  Want to append just submitted initials onto current hi-score list
+        //  or supply "refresh button" if using a function to sort by highest score
+        //
+
+
+        localStorage.setItem(`last-user-initials`, user.initials)
+
+        storedInitials.push(userInput.value.toUpperCase())
+        localStorage.setItem(`stored-initials`, JSON.stringify(storedInitials)) // store initials in local storage array
         storedScores.push(parseInt(score))                                      // push score into working array storedScores
         localStorage.setItem(`stored-scores`, JSON.stringify(storedScores))     // store score in local storage array
-        console.log(`Your storedScores is: ` + storedScores)
+        // console.log(`Your storedScores is: ` + storedScores)
     } 
 }
 
@@ -320,12 +372,14 @@ brandLink.addEventListener(`click`, function(){
     window.location.reload(true);
 })
 answerGroup.addEventListener(`click`, gradeAnswer)
-input.addEventListener(`keyup`, submitInitials)
+inputText.addEventListener(`keyup`, submitInitials)
+
+
 // questionText.addEventListener(`click`, function(e){
 //     submit = 1
 //     console.log(submit)
 //     submitInitials()
 // })
 
-// pause, because
-// highScoreLink.addEventListener(`click`, pauseTimer)
+// shortcut to end screen, because
+navScoreDisplay.addEventListener(`click`, endGame)

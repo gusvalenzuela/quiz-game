@@ -8,7 +8,7 @@ body, html{
 /* 
 pallete #1:
 
-Indian Red = #BD5452
+Indian Red = #006999
 Old Rose = #8E5049
 Black = #2F231C
 Slate Gray = #6C7571 
@@ -27,12 +27,12 @@ html {
 .btn-grv:hover {
     /* color: white; */
     text-decoration: none;
-    background: rgb(255, 175, 166);
+    background: rgb(0,174,255);
 }
 /* misnomer, for now */
-.avg-scr-display{
+.hi-scr-display{
     color: #2F231C;
-    font-size: 10px;
+    font-size: 14px;
 }
 .play-btn{
     text-decoration: none;
@@ -40,18 +40,18 @@ html {
     border-bottom: 1px ridge #2F231C;
     line-height: 50px;
     color: white;
-    background: #BD5452;
+    background: #006999;
 }
 .play-btn:hover{
-    color:#BD5452;
+    color:#006999;
     text-decoration: none;
     background: #2F231C;
 }
 .bg-grv{
-    background: #BD5452;
+    background: #006999;
 }
 .top-wrap{
-    background: rgb(255, 175, 166, 0.3);
+    background: rgba(0, 174, 255, .24);
 }
 .footer {
     position: absolute;
@@ -87,6 +87,10 @@ html {
     text-align: center;
     font-size: 18px;
     min-height: 75px;
+}
+#user-initials{
+    width: 75px;
+
 }
 .submit-button{
     border: none;
