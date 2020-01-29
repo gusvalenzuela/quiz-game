@@ -1,4 +1,6 @@
+const scriptTag = document.querySelector(`#questions-script`)
 const navScoreDisplay = document.querySelector(`#hi-scr-display`)
+const mainContainer = document.querySelector(`#container-col`)
 const quizTimeDisplay = document.querySelector(`#time-display`)
 const brandLink = document.querySelector(`#brand-link`)
 const highScoreLink = document.querySelector(`#high-scores`)
@@ -26,11 +28,12 @@ var timeElapsed = 0
 var timePenalty = 0
 var correctCount = 0
 var incorrectCount = 0
+var catQuiz = 0 
 var score = timer
 var currentSet = []
 var interval
-var userAnswer, hiScore, q, t;
-var correct 
+var userAnswer, correct, hiScore, highScoreDiv, q, t;
+// var correct 
 // var q     
 // var t   // the ultimate time displayed and later stored as score
 var submitBtn
@@ -50,11 +53,16 @@ var user = {
 //     scores: [],    
 // }
 
+// if(catQuiz = 1){
+//     scriptTag.setAttribute(`src`, `./js/catQuestions.js`)
+// }
+
 init()
 
 function init(){
     brandLink.click()       // clicking button to open the modal which houses the welcome message and play button (restart the game)
     getLocalInfo()
+    
 }
 function getLocalInfo(){
     
@@ -137,6 +145,14 @@ function changeQuestion(){
         } else {
             timePenalty++
         }
+        clearBtns()
+        quizTimeDisplay.textContent = ""
+        questionText.textContent = ""
+        answerGroup.remove()
+        gradeDisplay.remove()
+        qCountDisplay.remove()
+        centerDisplay.remove()
+
         // delay to allow for score change
         setTimeout(function(){
             endGame()
@@ -270,6 +286,7 @@ function endGame(event){
         score = t
     }
     
+    // i know, i'll clean it later
     quizTimeDisplay.setAttribute(`style`, `font-color: white;`)
     quizTimeDisplay.textContent = `Final Score: ` + score
     questionText.textContent = `Please enter your initials: `
@@ -304,22 +321,26 @@ function hiScoreList(){
     var div = document.createElement(`div`)
     div.setAttribute(`class`,``)
     div.setAttribute(`id`,`high-score-list`)
-    div.setAttribute(`class`,`p-2`)
-    div.textContent = `High Scores (earliest to latest): `
-    questionText.appendChild(div)
-    var highScoreDiv = document.querySelector(`#high-score-list`)
+    div.setAttribute(`class`,`row text-white text-center p-2`)
+    mainContainer.appendChild(div)
+    highScoreDiv = document.querySelector(`#high-score-list`)
+    // making h4 tag with the score list header
+    var h4 = document.createElement(`h4`)
+    h4.setAttribute(`class`,`text-center col-12`)
+    h4.textContent = `High Scores`
+    highScoreDiv.appendChild(h4)
 
     // perhaps sort in descending order for display?
     for(i=0;i<storedScores.length;i++){
         var p = document.createElement(`p`)
         var icon = document.createElement(`i`)
-        p.setAttribute(`class`,`text-center m-1`)
+        p.setAttribute(`class`,`text-center m-0 col-12`)
         p.setAttribute(`id`,`score-` + i)                  // tie ID to index
         icon.setAttribute(`class`, `fa fa-close mx-2`)
-        // icon.setAttribute(`style`, `font-size:14px`)
+        icon.setAttribute(`style`, `font-size:14px`)
         icon.setAttribute(`id`, `close-icon-` + i)
         icon.setAttribute(`title`, `close-icon`)
-        p.textContent = storedInitials[i] + ` - ` + storedScores[i]
+        p.textContent = storedInitials[i] + ` ` + storedScores[i]
         highScoreDiv.appendChild(p)
         p.prepend(icon)
     }
@@ -344,15 +365,27 @@ function submitInitials(e){
     if((keycode === 13) || (submit === 1)){
         console.log(`keycode is: `+ keycode)
             
-        // add conditional not to add p, scores, and initials if p already created
+        questionText.remove()            // or just remove the whole input option altogether ¯\_(ツ)_/¯
         
-        var para = document.createElement(`p`)                                  // create a "thank you" confirmation p tag
-        para.setAttribute(`class`, `lead text-danger font-weight-bold`)
-        para.setAttribute(`id`, `user-confirmation`)
-        para.textContent = `Thank you for playing!`
-        questionText.prepend(para)                                              // prepending to not mess with hi-score running list
+        quizTimeDisplay.setAttribute(`class`, `col bg-grv text-warning`)
+        quizTimeDisplay.setAttribute(`style`,`font-size: 32px;`)
+        quizTimeDisplay.textContent = `Thank you for playing!`
         
-        //  Want to append just submitted initials onto current hi-score list
+        // making p tag to add newest initials and scores to list (function this out)
+        var p = document.createElement(`p`)
+        var icon = document.createElement(`i`)
+        icon.setAttribute(`class`, `fa fa-close mx-2`)
+        icon.setAttribute(`style`, `font-size:14px`)
+        icon.setAttribute(`title`, `close-icon`)
+        p.setAttribute(`class`,`text-center m-0 bg-warning text-dark col-12`)
+        // icon.setAttribute(`id`, `close-icon-` + ?????)
+        // p.setAttribute(`id`,`score-` + ??????)                  // tie ID to index
+        p.textContent = user.initials + ` ` + score
+        highScoreDiv.appendChild(p)
+        p.prepend(icon)
+
+
+        //  Want to append submitted initials onto current hi-score list automatically
         //  or supply "refresh button" if using a function to sort by highest score
         //
 
@@ -368,7 +401,10 @@ function submitInitials(e){
 }
 
 // listeners
-playBtnCat.addEventListener(`click`, playQuiz)
+playBtnCat.addEventListener(`click`, function(e){
+    catQuiz = 1
+    playQuiz()
+})
 playBtnDog.addEventListener(`click`, function(){
     alert(`Coming Soon!`)
 })

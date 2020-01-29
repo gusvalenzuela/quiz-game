@@ -36,6 +36,7 @@
     <!-- container with main content  -->
     <div class="container">
         <div class="row main-wrap justify-content-center">
+             <!-- const mainContainer -->
             <div class="col-10 col-md-6 text-break text-wrap text-center top-wrap p-3" id="container-col">
                 <div class="row mb-2 justify-content-center">
                     <div class="col top-row bg-grv" id="question-count"></div>
@@ -46,10 +47,9 @@
                     <div class="col top-row bg-grv" id="time-display"></div>
                 </div>
                 <div class="row justify-content-between">
-                    <div class="col text-grv question align-items-center py-3" id="question-text"></div>
+                    <div class="col text-white question align-items-center py-3" id="question-text"></div>
                 </div>
                 <div class="row btn-group-vertical answer-group w-100" role="group" aria-label="answer-group" id="answer-group"></div>
-                <!-- <div class="col-12 display-4 py-2" id="grade-display"></div> -->
             </div>
         </div>
     </div>    
@@ -57,7 +57,7 @@
     <!-- footer  -->
     <footer class="footer">
         <div class="container text-center">
-          <span class="text-muted">&copy; 2020 \\ Gus Valenzuela <a href="https://github.com/gusvalenzuela/quiz-game" class="text-grv">\\ code</a></span>
+          <span class="text-muted">&copy; 2020 \\ Gus Valenzuela <a href="https://github.com/gusvalenzuela/quiz-game" class="text-white">\\ code</a></span>
         </div>
     </footer>
     <!-- bootstrap optional JS  -->
@@ -65,7 +65,7 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <!-- own JS  -->
-    <script src="./js/catQuestions.js"></script>
+    <script src="./js/catQuestions.js" id="questions-script"></script>
     <script src="./js/script.js"></script>
 </body>
 </html>
