@@ -4,7 +4,8 @@ const brandLink = document.querySelector(`#brand-link`)
 const highScoreLink = document.querySelector(`#high-scores`)
 const answerGroup = document.querySelector(`#answer-group`)
 const gradeDisplay = document.querySelector(`#grade-display`)
-const playBtn = document.querySelector(`#play-button`)
+const playBtnCat = document.querySelector(`#play-button-cat`)
+const playBtnDog = document.querySelector(`#play-button-dog`)
 const contColumn = document.querySelector(`#container-col`)
 const navBar = document.querySelector(`#navbar`)
 const qCountDisplay = document.querySelector(`#question-count`)
@@ -367,7 +368,10 @@ function submitInitials(e){
 }
 
 // listeners
-playBtn.addEventListener(`click`, playQuiz)
+playBtnCat.addEventListener(`click`, playQuiz)
+playBtnDog.addEventListener(`click`, function(){
+    alert(`Coming Soon!`)
+})
 brandLink.addEventListener(`click`, function(){
     window.location.reload(true);
 })
