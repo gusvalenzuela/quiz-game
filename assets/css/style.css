@@ -36,7 +36,7 @@ body {
     background: #2F231C;
 }
 .bg-grv{
-    background: #006999;
+    background: #006999da;
 }
 .top-wrap{
     background: rgba(0, 174, 255, .24);
@@ -76,9 +76,12 @@ body {
     font-size: 18px;
     min-height: 75px;
 }
-#user-initials{
+/* #user-initials{
     width: 75px;
 
+} */
+#high-score-list{
+    background: rgba(0, 174, 255, .48);
 }
 .submit-button{
     border: none;

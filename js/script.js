@@ -1,4 +1,17 @@
 const scriptTag = document.querySelector(`#questions-script`)
+var questions = {}
+
+// switch(quizChoice){
+//     case catQuiz:
+//         scriptTag.setAttribute(`src`, `./js/catQuestions.js`)
+//         break
+//     case dogQuiz:
+//         scriptTag.setAttribute(`src`, `./js/dogQuestions.js`)
+//         break
+//     case salmonQuiz:
+//         scriptTag.setAttribute(`src`, `./js/salmonQuestions.js`)
+// }
+
 const navScoreDisplay = document.querySelector(`#hi-scr-display`)
 const mainContainer = document.querySelector(`#container-col`)
 const quizTimeDisplay = document.querySelector(`#time-display`)
@@ -19,6 +32,9 @@ const input = document.createElement(`input`)
 const inputSubmit = document.createElement(`input`)
 const inputText = document.createElement(`input`)
 const button = document.createElement(`button`)
+const closeIcon = document.querySelector(`.fa-close`)
+var rightAnswerSound = new Audio("./catGood.wav");
+
 var userInput
 var answerBtns
 var qCount = 0
@@ -28,7 +44,6 @@ var timeElapsed = 0
 var timePenalty = 0
 var correctCount = 0
 var incorrectCount = 0
-var catQuiz = 0 
 var score = timer
 var currentSet = []
 var interval
@@ -53,9 +68,7 @@ var user = {
 //     scores: [],    
 // }
 
-// if(catQuiz = 1){
-//     scriptTag.setAttribute(`src`, `./js/catQuestions.js`)
-// }
+
 
 init()
 
@@ -76,7 +89,7 @@ function getLocalInfo(){
         });
     }
        
-    navScoreDisplay.textContent = `(Your Highest Score: ` + hiScore + `)`
+    navScoreDisplay.textContent = `(Highest Score: ` + hiScore + `)`
 
     if(storedInitials === null){
         storedInitials = []
@@ -137,6 +150,7 @@ function clearBtns(){
     }
 }
 function changeQuestion(){
+    answerGroup.addEventListener(`click`, gradeAnswer)
     // endGame if no questions left, else choose and display new question/choices
     if(currentSet.length === 0){
         // one last check and adding appropriate penalty to account for delay of endGame()
@@ -201,6 +215,7 @@ function playQuiz() {
 }
 function rightAnswer(){
 
+    rightAnswerSound.play()
     answerGroup.setAttribute(`class`,`row btn-group-vertical answer-group w-100 disable-click`) // disable click with CSS class (gotta be a better way)
     timePenalty = timePenalty - 11      // add time for delay in gradeAnswer()
     correctCount++
@@ -289,19 +304,21 @@ function endGame(event){
     // i know, i'll clean it later
     quizTimeDisplay.setAttribute(`style`, `font-color: white;`)
     quizTimeDisplay.textContent = `Final Score: ` + score
-    questionText.textContent = `Please enter your initials: `
+    questionText.textContent = `Enter your initials: `
     inputText.setAttribute(`type`, `text`)
     inputText.setAttribute(`style`, `text-transform: uppercase`)
     inputText.setAttribute(`id`, `user-initials`)
     inputText.setAttribute(`name`, `user-initials`)
-    inputText.setAttribute(`class`, `m-1 text-center`)
+    inputText.setAttribute(`class`, `col-12 m-1 text-center`)
     inputText.setAttribute(`maxlength`, `3`)
-    inputSubmit.setAttribute(`class`, `m-1`)
+    inputSubmit.setAttribute(`class`, `m-1 btn btn-light btn-sm rounded-0`)
     inputSubmit.setAttribute(`type`, `submit`)
     inputSubmit.setAttribute(`id`, `submit-button`)
     inputSubmit.setAttribute(`value`, `Submit`)
+    var hr = document.createElement(`hr`)
     questionText.appendChild(inputText)
     questionText.appendChild(inputSubmit)
+    questionText.appendChild(hr)
     // button.textContent = `submit`
     // questionText.appendChild(button)
     userInput = document.querySelector(`#user-initials`)
@@ -309,25 +326,32 @@ function endGame(event){
 
     submitBtn.addEventListener(`click`, function(e){
         e.preventDefault()
-        alert(`Currently non-functional\nplease press "enter" on your keyboard to submit`)
+        console.log(inputText.value)
+        if((inputText.value === "") || (inputText.value === " ") || (inputText.value === "  ") || (inputText.value === "   ")){
+            alert(`Please enter your initials`)
+        } else {
+            submitInitials()
+        }
     })
     
     // generateReportCard()     
 
     hiScoreList()
+
+    inputText.addEventListener(`keyup`, enterInitials)
     
 }
 function hiScoreList(){
     var div = document.createElement(`div`)
     div.setAttribute(`class`,``)
     div.setAttribute(`id`,`high-score-list`)
-    div.setAttribute(`class`,`row text-white text-center p-2`)
+    div.setAttribute(`class`,`row text-white text-center py-2`)
     mainContainer.appendChild(div)
     highScoreDiv = document.querySelector(`#high-score-list`)
     // making h4 tag with the score list header
     var h4 = document.createElement(`h4`)
     h4.setAttribute(`class`,`text-center col-12`)
-    h4.textContent = `High Scores`
+    h4.textContent = `HIGH SCORES`
     highScoreDiv.appendChild(h4)
 
     // perhaps sort in descending order for display?
@@ -340,6 +364,15 @@ function hiScoreList(){
         icon.setAttribute(`style`, `font-size:14px`)
         icon.setAttribute(`id`, `close-icon-` + i)
         icon.setAttribute(`title`, `close-icon`)
+
+        // function out
+        if(storedScores[i] < 10){
+            storedScores[i] = `00` + storedScores[i]
+        } else if(storedScores[i] < 100){
+            storedScores[i] = `0` + storedScores[i]
+        } 
+        
+        // score = parseInt(`0`+score)
         p.textContent = storedInitials[i] + ` ` + storedScores[i]
         highScoreDiv.appendChild(p)
         p.prepend(icon)
@@ -348,78 +381,94 @@ function hiScoreList(){
     highScoreDiv.addEventListener(`click`, function(event){
         event.preventDefault()
         var el = event.target
-        console.log(`element id is: ` + el.id)
-        if(el.title === `close-icon`){
-            alert(`You'd like to delete this record, wouldn't you?`)
-        }
+
+        // need to find how to grab the parent P element (to work with value and remove)
+
+        // =============
+        //  not ready
+        // =============
+        // var lastCharScoreID
+        // var lastCharCloseID
+        // console.log(`element id is: ` + el.id)
+        // console.log(el)
+        // if(el.title === `close-icon`){
+        //     var lenghtofScoreID
+        //     var lengthofID = el.id.length
+        //     lastCharCloseID = el.id[lengthofID - 1]
+        //     // el.remove()
+        //     console.log(lastCharCloseID)
+        //     console.log(`length of ID ` + lengthofID)
+        // }
     })
 
 }
-function submitInitials(e){
-    // e.preventDefault()
+function submitInitials(){
     user.initials = userInput.value.toUpperCase()
-    console.log(submit)
+    var uInit = userInput.value.toUpperCase()
+    questionText.remove()            // or just remove the whole input option altogether ¯\_(ツ)_/¯
+        
+    quizTimeDisplay.setAttribute(`class`, `col bg-grv text-warning`)
+    quizTimeDisplay.setAttribute(`style`,`font-size: 32px;`)
+    quizTimeDisplay.textContent = `Thank you for playing!`
+    
+    // making p tag to add newest initials and scores to list (function this out)
+    var p = document.createElement(`p`)
+    var icon = document.createElement(`i`)
+    icon.setAttribute(`class`, `fa fa-close mx-2`)
+    icon.setAttribute(`style`, `font-size:14px`)
+    icon.setAttribute(`title`, `close-icon`)
+    p.setAttribute(`class`,`text-center m-0 bg-warning text-dark col-12`)
+    // icon.setAttribute(`id`, `close-icon-` + ?????)
+    // p.setAttribute(`id`,`score-` + ??????)                  // tie ID to index
+    if(score < 10){
+        score = `00` + score
+    } else if(score < 100){
+        score = `0` + score
+    } 
 
+    p.textContent = uInit + ` ` + score
+    highScoreDiv.appendChild(p)
+    p.prepend(icon)
+
+    localStorage.setItem(`last-user-initials`, uInit)
+
+    // this.storedInitials.push(userInput.value.toUpperCase())
+    storedInitials.push(userInput.value.toUpperCase())
+    localStorage.setItem(`stored-initials`, JSON.stringify(storedInitials)) // store initials in local storage array
+    storedScores.push(parseInt(score))                                      // push score into working array storedScores
+    localStorage.setItem(`stored-scores`, JSON.stringify(storedScores))     // store score in local storage array
+    // console.log(`Your storedScores is: ` + storedScores)
+}
+function enterInitials(e){
+    e.preventDefault()
     var keycode = e.keyCode
-    // if keyup event is "enter" (keycode 13) then save input as initial and score in local storage
-    if((keycode === 13) || (submit === 1)){
-        console.log(`keycode is: `+ keycode)
-            
-        questionText.remove()            // or just remove the whole input option altogether ¯\_(ツ)_/¯
-        
-        quizTimeDisplay.setAttribute(`class`, `col bg-grv text-warning`)
-        quizTimeDisplay.setAttribute(`style`,`font-size: 32px;`)
-        quizTimeDisplay.textContent = `Thank you for playing!`
-        
-        // making p tag to add newest initials and scores to list (function this out)
-        var p = document.createElement(`p`)
-        var icon = document.createElement(`i`)
-        icon.setAttribute(`class`, `fa fa-close mx-2`)
-        icon.setAttribute(`style`, `font-size:14px`)
-        icon.setAttribute(`title`, `close-icon`)
-        p.setAttribute(`class`,`text-center m-0 bg-warning text-dark col-12`)
-        // icon.setAttribute(`id`, `close-icon-` + ?????)
-        // p.setAttribute(`id`,`score-` + ??????)                  // tie ID to index
-        p.textContent = user.initials + ` ` + score
-        highScoreDiv.appendChild(p)
-        p.prepend(icon)
 
-
-        //  Want to append submitted initials onto current hi-score list automatically
-        //  or supply "refresh button" if using a function to sort by highest score
-        //
-
-
-        localStorage.setItem(`last-user-initials`, user.initials)
-
-        storedInitials.push(userInput.value.toUpperCase())
-        localStorage.setItem(`stored-initials`, JSON.stringify(storedInitials)) // store initials in local storage array
-        storedScores.push(parseInt(score))                                      // push score into working array storedScores
-        localStorage.setItem(`stored-scores`, JSON.stringify(storedScores))     // store score in local storage array
-        // console.log(`Your storedScores is: ` + storedScores)
+    // if keyup event is "enter" (keycode 13) then save input as initial and score in local storage (a.k.a submitInitials())
+    if((keycode === 13)){
+        // console.log(`keycode is: `+ keycode)
+        submitInitials()
     } 
 }
 
 // listeners
 playBtnCat.addEventListener(`click`, function(e){
-    catQuiz = 1
+    e.preventDefault()
+    questions = questionsObj.cat
     playQuiz()
 })
-playBtnDog.addEventListener(`click`, function(){
-    alert(`Coming Soon!`)
+playBtnDog.addEventListener(`click`, function(e){
+    e.preventDefault()
+    alert(`COMING SOON!`)
+    // questions = questionsObj.dog
+    // playQuiz()
 })
-brandLink.addEventListener(`click`, function(){
+brandLink.addEventListener(`click`, function(e){
+    e.preventDefault()
     window.location.reload(true);
 })
-answerGroup.addEventListener(`click`, gradeAnswer)
-inputText.addEventListener(`keyup`, submitInitials)
 
 
-// questionText.addEventListener(`click`, function(e){
-//     submit = 1
-//     console.log(submit)
-//     submitInitials()
-// })
+
 
 // shortcut to end screen, because
 navScoreDisplay.addEventListener(`click`, endGame)
