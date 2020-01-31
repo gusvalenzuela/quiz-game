@@ -73,26 +73,28 @@ function init(){
     // getLocalInfo()
     
 }
-// function getLocalInfo(){
+function getLocalInfo(){
+    storedScores = JSON.parse(localStorage.getItem(someObj.name+`-stored-scores`))
+    storedInitials = JSON.parse(localStorage.getItem(someObj.name+`-stored-initials`))
     
-//     if(storedScores === null){
-//         storedScores = []
-//     } else {
-//         storedScores = storedScores
-//         // find max of all stored scores in array
-//         hiScore = storedScores.reduce(function(a, b) {
-//             return Math.max(a, b);
-//         });
-//     }
+    if(storedScores === null){
+        storedScores = []
+    } else {
+        storedScores = storedScores
+        // find max of all stored scores in array
+        hiScore = storedScores.reduce(function(a, b) {
+            return Math.max(a, b);
+        });
+    }
        
-//     navScoreDisplay.textContent = `(Highest Score: ` + hiScore + `)`
+    navScoreDisplay.textContent = `(Highest Score: ` + hiScore + `)`
 
-//     if(storedInitials === null){
-//         storedInitials = []
-//     } else {
-//         storedInitials = storedInitials
-//     }
-// }
+    if(storedInitials === null){
+        storedInitials = []
+    } else {
+        storedInitials = storedInitials
+    }
+}
 // function to clear time and text displayed 
 function clear(){
     timePenalty = 0
@@ -167,6 +169,7 @@ function changeQuestion(){
         setTimeout(function(){
             someObj.endGame()
         }, 1000)
+
     } else {        
         qCount++        // keep count of questions asked and display
         qCountDisplay.textContent = `Q:` + qCount 
@@ -196,9 +199,8 @@ function changeQuestion(){
 }
 function playQuiz() {
     const qs = questions
-    storedScores = JSON.parse(localStorage.getItem(someObj.name+`-stored-scores`))
-    storedInitials = JSON.parse(localStorage.getItem(someObj.name+`-stored-initials`))
-
+    getLocalInfo()
+    
     // randomizing the order of questions shown each time the quiz is loaded
     for(i=qs.length;i>0;i--){
         var r = Math.floor(Math.random()*qs.length) // generate random number 0-length of Questions Object
@@ -342,7 +344,7 @@ var someObj = {
 
         someObj.hiScoreList()
 
-        inputText.addEventListener(`keyup`, enterInitials)
+        
         
     },
 
@@ -389,6 +391,9 @@ var someObj = {
             var el = event.target
 
             // need to find how to grab the parent P element (to work with value and remove)
+            // REMOVE ELEMENT BY ID
+
+
 
             // =============
             //  not ready
@@ -442,9 +447,10 @@ var someObj = {
         localStorage.setItem(`last-user-initials`, uInit)
 
         // this.storedInitials.push(userInput.value.toUpperCase())
-        storedInitials.push(userInput.value.toUpperCase())
+        storedInitials.push(uInit)
+        console.log(uInit)
         localStorage.setItem(this.name + `-stored-initials`, JSON.stringify(storedInitials)) // store initials in local storage array
-        storedScores.push(parseInt(score))                                      // push score into working array storedScores
+        storedScores.push(parseInt(scorePrint))                                      // push score into working array storedScores
         localStorage.setItem(this.name + `-stored-scores`, JSON.stringify(storedScores))     // store score in local storage array
         // console.log(`Your storedScores is: ` + storedScores)
     },
@@ -464,18 +470,20 @@ function enterInitials(e){
 
 // listeners
 playBtnCat.addEventListener(`click`, function(e){
-    e.preventDefault()
+    // e.preventDefault()
     questions = questionsObj.cat
     someObj.name = "Cat Quiz"
     playQuiz()
 })
 playBtnDog.addEventListener(`click`, function(e){
-    e.preventDefault()
+    // e.preventDefault()
     // alert(`COMING SOON!`)
     questions = questionsObj.dog
     someObj.name = "Dog Quiz"
     playQuiz()
 })
+inputText.addEventListener(`keyup`, enterInitials)
+
 brandLink.addEventListener(`click`, function(e){
     e.preventDefault()
     window.location.reload(true);

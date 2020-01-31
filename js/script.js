@@ -383,6 +383,7 @@ function hiScoreList(){
         var el = event.target
 
         // need to find how to grab the parent P element (to work with value and remove)
+        // REMOVE ELEMENT BY ID
 
         // =============
         //  not ready

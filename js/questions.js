@@ -41,45 +41,45 @@ var catQs = [
     },
 ];
 var dogQs = [
-    {   title: `This is a dog question #1`,
+    {   title: `Contrary to popular belief, dogs do not sweat by salivating. They sweat through... `,
         choices: [
-            `A`,
-            `B`,
-            `C`,
-            `D`],
-        answer: `A`
+            `the pads of their feet.`,
+            `the tip of their nose.`,
+            `panting.`,
+            `the base of their head.`],
+        answer: `the pads of their feet.`
     },
-    {   title: `This is a dog question #2`,
+    {   title: `Fill in the blank: ______ is the only barkless dog in the world.`,
         choices: [
-            `A`,
-            `B`,
-            `C`,
-            `D`],
-        answer: `D`
+            `The Greyhound`,
+            `The Australian Cattle Dog`,
+            `The Basenji`,
+            `The English Wolfhound`],
+        answer: `The Basenji`
     },
-    {   title: `This is a dog question #3`,
+    {   title: `All dogs, regardless of breed, are direct descendants of this animal:`,
         choices: [
-            `A`,
-            `B`,
-            `C`,
-            `D`],
-        answer: `C`
+            `Wolf`,
+            `Lynx`,
+            `Opposum`,
+            `Human`],
+        answer: `Wolf`
     },
-    {   title: `This is a dog question #4`,
+    {   title: `Nearly all but two breeds of dogs have pink tongues: the Chow Chow and the Shar-pei both have this color tongues.`,
         choices: [
-            `A`,
-            `B`,
-            `C`,
-            `D`],
-        answer: `C`
+            `Brown`,
+            `Red`,
+            `Black`,
+            `Orange`],
+        answer: `Black`
     },
-    {   title: `This is a dog question #5`,
+    {   title: `Fill in the blank: An adult dog has __ teeth`,
         choices: [
-            `A`,
-            `B`,
-            `C`,
-            `D`],
-        answer: `B`
+            `24`,
+            `Too Many`,
+            `42`,
+            `33`],
+        answer: `42`
     },
 ];
 var salmonQs = [
