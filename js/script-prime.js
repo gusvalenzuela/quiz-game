@@ -20,22 +20,18 @@ const brandLink = document.querySelector(`#brand-link`)
 const highScoreLink = document.querySelector(`#high-scores`)
 const answerGroup = document.querySelector(`#answer-group`)
 const gradeDisplay = document.querySelector(`#grade-display`)
-const playBtnCat = document.querySelector(`#play-button-cat`)
-const playBtnDog = document.querySelector(`#play-button-dog`)
-const contColumn = document.querySelector(`#container-col`)
-const navBar = document.querySelector(`#navbar`)
-const qCountDisplay = document.querySelector(`#question-count`)
 const centerDisplay = document.querySelector(`#center-display`)
 const penDisplay = document.querySelector(`#penalty-display`)
+const playBtnCat = document.querySelector(`#play-button-cat`)
+const playBtnDog = document.querySelector(`#play-button-dog`)
+const navBar = document.querySelector(`#navbar`)
+const qCountDisplay = document.querySelector(`#question-count`)
 // const closeBtn = document.querySelector(`#close-btn`)
 const questionText = document.querySelector(`#question-text`)
 const input = document.createElement(`input`)
 const inputSubmit = document.createElement(`input`)
 const inputText = document.createElement(`input`)
 const button = document.createElement(`button`)
-const closeIcon = document.querySelector(`.fa-close`)
-var rightAnswerSound = new Audio("./assets/sounds/catGood.wav");
-var wrongAnswerSound = new Audio("./assets/sounds/catBad.wav");
 var userInput
 var answerBtns
 var qCount = 0
@@ -48,9 +44,11 @@ var incorrectCount = 0
 var score = timer
 var currentSet = []
 var interval
-var userAnswer, correct, hiScore, highScoreDiv, q, t, storedScores, storedInitials;
+var userAnswer, correct, hiScore, highScoreDiv, q, t, storedScores, storedInitials, currentRightSound, currentWrongSound;
 var submitBtn
 var submit = 0
+var rightAnswerSound = new Audio(currentRightSound);
+var wrongAnswerSound = new Audio(currentWrongSound);
 
 // object for current and future user data
 var user = {
@@ -174,7 +172,7 @@ function changeQuestion(){
         qCount++        // keep count of questions asked and display
         qCountDisplay.textContent = `Q:` + qCount 
 
-        var rand = Math.floor(Math.random()*questions.length) // generate random number 0 - questions length
+        var rand = Math.floor(Math.random()*questions.length) // generate random number 0 - questions length ¯\_(ツ)_/¯
         q = currentSet[rand]    // store random selected question in variable q
         qc = q.choices          // store choices of random question in variable qc
         qcToDisplay = []
@@ -292,7 +290,7 @@ var someObj = {
     xScore: 0,
     xInitials: "",
     endGame: function(e){
-        // e.preventDefault()
+        
         clearInterval(interval)
         clearBtns()
         answerGroup.remove()
@@ -334,18 +332,16 @@ var someObj = {
             e.preventDefault()
             console.log(inputText.value)
             if((inputText.value === "") || (inputText.value === " ") || (inputText.value === "  ") || (inputText.value === "   ")){
-                alert(`Please enter your initials`)
+                alert(`Please enter your initials (Max: 3 Characters)`)
             } else {
                 someObj.submitInitials()
             }
         })
         
         // generateReportCard()     
-
+        // console.log(this)
         someObj.hiScoreList()
 
-        
-        
     },
 
     hiScoreList: function(){
@@ -361,8 +357,18 @@ var someObj = {
         h4.textContent = this.name.toUpperCase() + ` HIGH SCORES`
         highScoreDiv.appendChild(h4)
 
+        var arrayofIndices = []
+        
+        var descScoreList = storedScores
+        descScoreList =  descScoreList.sort(function(a, b){
+            var index = descScoreList.indexOf(a)
+            console.log(index)
+            return b-a
+        })
+        // var descInitialsList = 
+
         // perhaps sort in descending order for display?
-        for(i=0;i<storedScores.length;i++){
+        for(i=0;i<descScoreList.length;i++){
             var p = document.createElement(`p`)
             var icon = document.createElement(`i`)
             p.setAttribute(`class`,`text-center m-0 col-12`)
@@ -372,51 +378,57 @@ var someObj = {
             icon.setAttribute(`id`, `close-icon-` + i)
             icon.setAttribute(`title`, `close-icon`)
 
-            // function out 
-            //
-            if(storedScores[i] < 10){
-                storedScores[i] = `00` + storedScores[i]
-            } else if(storedScores[i] < 100){
-                storedScores[i] = `0` + storedScores[i]
+            var descScoreListPrint
+            var descInitialsPrint
+
+            if(descScoreList[i] < 10){
+                descScoreListPrint = `00` + descScoreList[i]
+            } else if(descScoreList[i] < 100){
+                descScoreListPrint = `0` + descScoreList[i]
             } 
             
             // score = parseInt(`0`+score)
-            p.textContent = storedInitials[i] + ` ` + storedScores[i]
+            p.textContent = storedInitials[i] + ` ` + descScoreListPrint    // sorting in high score but doesnt sort initials with it
             highScoreDiv.appendChild(p)
             p.prepend(icon)
         }
 
         highScoreDiv.addEventListener(`click`, function(event){
-            event.preventDefault()
+            // event.stopPropagation()
             var el = event.target
-
             // need to find how to grab the parent P element (to work with value and remove)
             // REMOVE ELEMENT BY ID
-
-
-
             // =============
             //  not ready
             // =============
-            // var lastCharScoreID
-            // var lastCharCloseID
+            var lastCharScoreID
+            var lastCharCloseID
             // console.log(`element id is: ` + el.id)
-            // console.log(el)
-            // if(el.title === `close-icon`){
-            //     var lenghtofScoreID
-            //     var lengthofID = el.id.length
-            //     lastCharCloseID = el.id[lengthofID - 1]
-            //     // el.remove()
-            //     console.log(lastCharCloseID)
-            //     console.log(`length of ID ` + lengthofID)
-            // }
+            console.log(el)
+            if(el.title === `close-icon`){
+                var lenghtofScoreID
+                var lengthofCloseID = el.id.length
+                lastCharCloseID = el.id[lengthofCloseID - 1]
+                // el.remove()
+                var parentID = `#score-`+lastCharCloseID
+                var parentElement = document.querySelector(parentID)
+                console.log(parentElement)
+                confirm(`are you sure you want to remove this record?\ncannot be undone.`)
+                parentElement.remove()
+                // find way to delete that particular record, 
+                alert(`Just kidding, i haven't coded it that far\nthat record will return when you refresh the game`)
+
+                // console.log(`the selected score paragrap tag is: `+grabParent)
+                console.log(`last character is: `+lastCharCloseID)
+                console.log(`length of ID ` + lengthofCloseID)
+            }
         })
     },
 
     submitInitials: function(){
         user.initials = userInput.value.toUpperCase()
         var uInit = userInput.value.toUpperCase()
-        questionText.remove()            // or just remove the whole input option altogether ¯\_(ツ)_/¯
+        questionText.remove()           
             
         quizTimeDisplay.setAttribute(`class`, `col bg-grv text-warning`)
         quizTimeDisplay.setAttribute(`style`,`font-size: 32px;`)
@@ -431,7 +443,7 @@ var someObj = {
         p.setAttribute(`class`,`text-center m-0 bg-warning text-dark col-12`)
         // icon.setAttribute(`id`, `close-icon-` + ?????)
         // p.setAttribute(`id`,`score-` + ??????)                  // tie ID to index
-        var scorePrint = 0
+        var scorePrint
         if(score < 10){
             scorePrint = `00` + score
         } else if(score < 100){
@@ -471,9 +483,11 @@ function enterInitials(e){
 // listeners
 playBtnCat.addEventListener(`click`, function(e){
     // e.preventDefault()
-    questions = questionsObj.cat
-    someObj.name = "Cat Quiz"
+    questions = questionsObj.cat            // select the "Cat" questions from the Questions object to use in current game
+    someObj.name = "Cat Quiz"               //  set the name variable in someObj, in order to "personalize" the score lists per quiz type
     playQuiz()
+    currentRightSound = "./assets/sounds/catGood.wav"
+    currentWrongSound = "./assets/sounds/catBad.wav"
 })
 playBtnDog.addEventListener(`click`, function(e){
     // e.preventDefault()
@@ -482,6 +496,14 @@ playBtnDog.addEventListener(`click`, function(e){
     someObj.name = "Dog Quiz"
     playQuiz()
 })
+// playBtnAll.addEventListener(`click`, function(e){
+//     e.preventDefault()
+//     alert(`COMING SOON!`)
+//      // loop through (x amt) the questionsObj and push all questionObj "quiz sets" into the questions array to use in current game
+//     questions = 
+//     someObj.name = "Combo Quiz"
+//     playQuiz()
+// })
 inputText.addEventListener(`keyup`, enterInitials)
 
 brandLink.addEventListener(`click`, function(e){
@@ -493,4 +515,5 @@ brandLink.addEventListener(`click`, function(e){
 
 
 // shortcut to end screen, because
+// bug: when shortcut used, the storedScores are stored as string (want integer)
 navScoreDisplay.addEventListener(`click`, someObj.endGame)
