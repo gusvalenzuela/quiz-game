@@ -2,17 +2,6 @@
 const scriptTag = document.querySelector(`#questions-script`)
 var questions = {}
 
-// switch(quizChoice){
-//     case catQuiz:
-//         scriptTag.setAttribute(`src`, `./js/catQuestions.js`)
-//         break
-//     case dogQuiz:
-//         scriptTag.setAttribute(`src`, `./js/dogQuestions.js`)
-//         break
-//     case salmonQuiz:
-//         scriptTag.setAttribute(`src`, `./js/salmonQuestions.js`)
-// }
-
 const navScoreDisplay = document.querySelector(`#hi-scr-display`)
 const mainContainer = document.querySelector(`#container-col`)
 const quizTimeDisplay = document.querySelector(`#time-display`)
@@ -24,6 +13,7 @@ const centerDisplay = document.querySelector(`#center-display`)
 const penDisplay = document.querySelector(`#penalty-display`)
 const playBtnCat = document.querySelector(`#play-button-cat`)
 const playBtnDog = document.querySelector(`#play-button-dog`)
+const playBtnSalmon = document.querySelector(`#play-button-salmon`)
 const navBar = document.querySelector(`#navbar`)
 const qCountDisplay = document.querySelector(`#question-count`)
 // const closeBtn = document.querySelector(`#close-btn`)
@@ -469,8 +459,8 @@ var someObj = {
 }
 
 
-function enterInitials(e){
-    e.preventDefault()
+function enterInitials(e){    
+    // e.preventDefault()
     var keycode = e.keyCode
 
     // if keyup event is "enter" (keycode 13) then save input as initial and score in local storage (a.k.a submitInitials())
@@ -480,21 +470,27 @@ function enterInitials(e){
     } 
 }
 
-// listeners
+// playbtn listeners >> delegate instead
 playBtnCat.addEventListener(`click`, function(e){
     // e.preventDefault()
     questions = questionsObj.cat            // select the "Cat" questions from the Questions object to use in current game
-    someObj.name = "Cat Quiz"               //  set the name variable in someObj, in order to "personalize" the score lists per quiz type
+    someObj.name = "Cat"               //  set the name variable in someObj, in order to "personalize" the score lists per quiz type
     playQuiz()
     currentRightSound = "./assets/sounds/catGood.wav"
     currentWrongSound = "./assets/sounds/catBad.wav"
 })
 playBtnDog.addEventListener(`click`, function(e){
     // e.preventDefault()
-    // alert(`COMING SOON!`)
     questions = questionsObj.dog
-    someObj.name = "Dog Quiz"
+    someObj.name = "Dog"
     playQuiz()
+})
+playBtnSalmon.addEventListener(`click`, function(e){
+    // e.preventDefault()
+    alert(`COMING SOON!`)
+    questions = questionsObj.salmon
+    someObj.name = "Salmon"
+    // playQuiz()
 })
 // playBtnAll.addEventListener(`click`, function(e){
 //     e.preventDefault()
@@ -504,6 +500,8 @@ playBtnDog.addEventListener(`click`, function(e){
 //     someObj.name = "Combo Quiz"
 //     playQuiz()
 // })
+
+
 inputText.addEventListener(`keyup`, enterInitials)
 
 brandLink.addEventListener(`click`, function(e){
