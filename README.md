@@ -4,7 +4,7 @@
 
 - Timed quiz with time penalty for wrong answers and time added for correct ones. Final score is total time left at end of quiz. A listing of all previous scores received will be shown on the final screen.
 
-- ![Question Sample](quiz-game\screenshot04.PNG)
+- ![Question Sample](quiz-game\assets\images\screenshot04.PNG)
 
 - URL: https://gusvalenzuela.github.io/quiz-game/
 
@@ -12,7 +12,7 @@
 
 - Choose a quiz.
 
-- ![Play Splash](quiz-game\screenshot01-play.PNG)
+- ![Play Splash](quiz-game\assets\images\screenshot01-play.PNG)
 
 - A timer will begin and a series of questions will be asked. Answer correctly and you'll be rewarded with an extra 10 seconds on the clock. Get it wrong and you lose 15 seconds! Choose carefully. And watch the clock, once it runs out the quiz is over and you will be awarded 0 points (womp womp). So hurry!
 
