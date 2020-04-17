@@ -17,6 +17,8 @@ quizOptionsForm.addEventListener(`submit`, e => {
 
 function generatePlayBtns() {
     quizOptionsDiv.innerHTML = ``            // clearing "loading screen"
+
+
     const start = document.createElement(`button`)
     const select = document.createElement(`select`)
     const selectAmount = document.createElement(`select`)
@@ -61,7 +63,9 @@ function generatePlayBtns() {
     optD3.textContent = `Hard`
     selectDifficulty.append(optD1, optD2, optD3)
 
-    quizOptionsDiv.append(select, selectDifficulty, start)
+    const catLabelDiv = $(`<div class="input-group-prepend">`).append($(`<label class="input-group-text" for="inputGroupSelect01">`).text(`Select a category: `))
+
+    quizOptionsDiv.append(catLabelDiv, select, selectDifficulty, start)
 
 }
 
