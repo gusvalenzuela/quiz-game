@@ -1,14 +1,15 @@
 
-
-
 quizOptionsForm.addEventListener(`submit`, e => {
     e.preventDefault()
 
-    const sel = document.getElementById(`quiz-options-select`)
+    const sel = $(`#quiz-options-select`)[0]
+    // const amtSelected = $(`#select-amount`).val().trim()
+    const amtSelected = 10
+
 
     for (category of questionCategories) {
         if (sel.value !== `- Choose a category -` && sel.value === category.name) {
-            return pullTriviaQuestions(15, category.id)
+            return pullTriviaQuestions(amtSelected, category.id)
         }
     }
 
@@ -29,7 +30,7 @@ function generatePlayBtns() {
     // start.setAttribute(`value`, `Submit`)
     start.textContent = `PLAY!`
 
-    // select and appropriate options for category of quiz
+    // select appropriate options for category of quiz
     select.setAttribute(`id`, `quiz-options-select`)
     select.setAttribute(`class`, `row`)
     optionInit.textContent = `- Choose a category -`
@@ -37,15 +38,13 @@ function generatePlayBtns() {
 
     // rest of options dependent on available categories
     for (category of questionCategories) {
-        let option = document.createElement(`option`)
-        option.textContent = category.name
-        option.setAttribute(`value`, category.name)
-        select.append(option)
+        let option = $(`<option value="${category.name}">`).text(category.name)
+        $(select).append(option)
     }
 
     selectAmount.setAttribute(`id`, `select-amount`)
-    selectAmount.setAttribute(`class`,`col-6`)
-    for (i = 5; i < 101; i++) {
+    selectAmount.setAttribute(`class`,`col`)
+    for (i = 5; i < 10; i++) {
         let option = document.createElement(`option`)
         option.textContent = i
         option.setAttribute(`value`, i)
@@ -53,7 +52,7 @@ function generatePlayBtns() {
     }
 
     selectDifficulty.setAttribute(`id`, `select-difficulty`)
-    selectDifficulty.setAttribute(`class`,`col-6`)
+    selectDifficulty.setAttribute(`class`,`col`)
     let optD1 = document.createElement(`option`)
     let optD2 = document.createElement(`option`)
     let optD3 = document.createElement(`option`)
@@ -62,7 +61,7 @@ function generatePlayBtns() {
     optD3.textContent = `Hard`
     selectDifficulty.append(optD1, optD2, optD3)
 
-    quizOptionsDiv.append(select, selectAmount, selectDifficulty, start)
+    quizOptionsDiv.append(select, selectDifficulty, start)
 
 }
 
@@ -192,7 +191,8 @@ function changeQuestion() {
 }
 function playQuiz() {
     const qs = questions
-
+    $(`#container-col`).show()
+    $(`#quiz-options-form`).remove()
     getLocalInfo()
 
     // randomizing the order of questions shown each time the quiz is loaded

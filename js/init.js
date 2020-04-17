@@ -63,6 +63,7 @@ function getTriviaCategories() {
 }
 function init() {
     // quizOptionsDiv.innerHTML = ``
+    $(`#container-col`).hide()
     quizOptionsDiv.innerHTML = `<h2 class="text-white">LOADING CATEGORIES...</h2>`
     getTriviaCategories()
     // brandLink.click()       // clicking button to open the modal which houses the welcome message and play button (restart the game)

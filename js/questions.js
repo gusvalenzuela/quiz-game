@@ -139,11 +139,12 @@
 //         answer: `B`
 //     },
 // ];
-
-function QuestionsFull(title, answer, choices) {
-    this.title = title;
-    this.answer = answer
-    this.choices = choices
+class QuestionsFull {
+    constructor(title, answer, choices) {
+        this.title = title;
+        this.answer = answer;
+        this.choices = choices;
+    }
 }
 
 // object holding individual arrays
