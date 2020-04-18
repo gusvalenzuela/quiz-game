@@ -10,7 +10,7 @@ quizOptionsForm.addEventListener(`submit`, (e) => {
       let randomID = Math.floor(Math.random() * questionCategories.length);
       return pullTriviaQuestions(amtSelected, randomID + 8);
     } else if (
-      sel.value.trim() !== `` &&
+      sel.value.trim() !== `Choose...` &&
       sel.value.trim() !== null &&
       sel.value.trim() === category.name
     ) {
@@ -26,7 +26,7 @@ function generatePlayBtns() {
   ).text(`PLAY!`);
 
   const selectCategory = $(`<select id="quiz-options-select" class="col">`)
-    .append($(`<option>`))  // initial "blank" option box
+    .append($(`<option>`).text(`Choose...`))  // initial "blank" option box
     .append($(`<option>`).text(`--- RANDOM ---`)); // initial "random" option box
 
   // making a dropdown select list for desired amount of questions
