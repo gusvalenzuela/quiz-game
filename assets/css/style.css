@@ -22,6 +22,10 @@ body {
     color: #2F231C;
     font-size: 14px;
 }
+
+.selection-screen .row{
+    height: 4.7em;
+}
 .play-btn{
     text-decoration: none;
     border: none;
