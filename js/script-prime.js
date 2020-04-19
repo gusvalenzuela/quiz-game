@@ -1,20 +1,25 @@
 quizOptionsForm.addEventListener(`submit`, (e) => {
   e.preventDefault();
 
-  const sel = $(`#quiz-options-select`)[0];
+  const selCat = $(`#quiz-options-select`)[0];
+  const selDiff = $(`#select-difficulty`)[0];
   // const amtSelected = $(`#select-amount`).val().trim()
   const amtSelected = 10;
 
   for (category of questionCategories) {
-    if (sel.value.trim() === `--- RANDOM ---`) {
-      let randomID = Math.floor(Math.random() * questionCategories.length);
-      return pullTriviaQuestions(amtSelected, randomID + 8);
-    } else if (
-      sel.value.trim() !== `Choose...` &&
-      sel.value.trim() !== null &&
-      sel.value.trim() === category.name
+    if (
+      selCat.value.trim() === `(Random Category)` &&
+      selDiff.value.trim() !== `Choose...`
     ) {
-      return pullTriviaQuestions(amtSelected, category.id);
+      let randomID = Math.floor(Math.random() * questionCategories.length);
+      return pullTriviaQuestions(amtSelected, randomID + 8, selDiff.value.trim().toLowerCase());
+    } else if (
+      selCat.value.trim() !== `Choose...` &&
+      selCat.value.trim() !== null &&
+      selCat.value.trim() === category.name &&
+      selDiff.value.trim() !== `Choose...`
+    ) {
+      return pullTriviaQuestions(amtSelected, category.id, selDiff.value.trim().toLowerCase());
     }
   }
 });
@@ -26,8 +31,8 @@ function generatePlayBtns() {
   ).text(`PLAY!`);
 
   const selectCategory = $(`<select id="quiz-options-select" class="col">`)
-    .append($(`<option>`).text(`Choose...`))  // initial "blank" option box
-    .append($(`<option>`).text(`--- RANDOM ---`)); // initial "random" option box
+    .append($(`<option>`).text(`Choose...`)) // initial "blank" option box
+    .append($(`<option>`).text(`(Random Category)`)); // initial "random" option box
 
   // making a dropdown select list for desired amount of questions
   const selectAmount = $(`<select id="select-amount" class="col">`)
@@ -46,6 +51,7 @@ function generatePlayBtns() {
   // making a dropdown select list for desired difficulty of questions
   // has set difficulties of easy, medium, hard
   const selectDifficulty = $(`<select id="select-difficulty" class="col">`)
+    .append($(`<option>`).text(`Choose...`))
     .append($(`<option>`).text(`Easy`))
     .append($(`<option>`).text(`Medium`))
     .append($(`<option>`).text(`Hard`));

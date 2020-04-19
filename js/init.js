@@ -77,7 +77,7 @@ function getTriviaCategories() {
     method: `GET`,
   }).then((catRes) => {
     const categories = catRes.trivia_categories;
-    // console.log(categories)
+    console.log(categories)
     categories.forEach((item) => questionCategories.push(item));
     generatePlayBtns();
   });
