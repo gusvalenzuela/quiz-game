@@ -13,17 +13,17 @@ function pullTriviaQuestions(
   diff = `easy`,
   type = `multiple`
 ) {
+
   // console.log(`running pullTrivia...`)
   console.log(`category random num: `, cat);
   const settings = {
     async: true,
     crossDomain: true,
-    // url: `http://jservice.io/api/random?count=10`,
     url:
       `https://opentdb.com/api.php?amount=` +
       amt +
       `&category=` +
-      cat +
+      parseInt(cat) +
       `&difficulty=` +
       diff +
       `&type=` +
@@ -31,12 +31,15 @@ function pullTriviaQuestions(
       `&encode=url3986`,
     method: `GET`,
   };
+
   $.ajax(settings).then((r) => {
     // console.log(`AJAX RESPONSE RECEIVED...`)
-    console.log(
-      `Category is: \n`,
-      decodeURIComponent(r.results[0])
-    );
+    let categoryChosen = r.results[0].category
+
+    if (categoryChosen === undefined) {
+      location.reload()
+      console.log(`something went wrong, here are the results...`, r);
+    }
 
     // console.log(r)
     r.results.forEach((item) => {
@@ -52,6 +55,6 @@ function pullTriviaQuestions(
       questions.push(itemQues);
     });
 
-    playQuiz();
+    playQuiz(decodeURIComponent(categoryChosen));
   });
 }
