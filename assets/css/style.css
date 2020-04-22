@@ -1,32 +1,52 @@
-
 /* Sticky footer styles
 -------------------------------------------------- */
+
 html {
     position: relative;
     min-height: 100%;
 }
+
 body {
     background: url(../images/what-the-hex-dark.png);
-    margin-bottom: 60px; /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    /* Margin bottom by footer height */
 }
-*{
+
+* {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
+
 .btn-grv:hover {
     /* color: white; */
     text-decoration: none;
-    background: rgb(0,174,255);
+    background: rgb(0, 174, 255);
 }
+
 /* misnomer, for now */
-.hi-scr-display{
+
+.hi-scr-display {
     color: #2F231C;
     font-size: 14px;
 }
 
-.selection-screen .row{
+.selection-screen {
+    padding: 1.7569565135131rem;
+}
+.selection-screen .row {
     height: 4.7em;
 }
-.play-btn{
+
+#container-col {
+    height: 100%;
+    white-space: normal !important;
+    text-align: center !important;
+    /* padding: 1em; */
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    background: rgba(0, 174, 255, .24);
+}
+
+.play-btn {
     text-decoration: none;
     border: none;
     border-bottom: 1px ridge #2F231C;
@@ -34,70 +54,94 @@ body {
     color: white;
     background: #006999;
 }
-.play-btn:hover{
-    color:#006999;
+
+.play-btn:hover {
+    color: #006999;
     text-decoration: none;
     background: #2F231C;
 }
-.bg-grv{
+
+.play-screen {
+    height: 81% !important;
+}
+
+.bg-grv {
     background: #006999da;
 }
-.top-wrap{
+
+.top-wrap {
     background: rgba(0, 174, 255, .24);
 }
+
 .footer {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 60px; /* Set the fixed height of the footer here */
-    line-height: 25px; /* Vertically center the text there */
+    height: 60px;
+    /* Set the fixed height of the footer here */
+    line-height: 25px;
+    /* Vertically center the text there */
     background-color: transparent;
 }
+
 .text-grv {
     color: #006999;
 }
-.top-row{
+
+.top-row {
     color: white;
     font-size: 32px;
 }
-.top-row-center{
+
+.top-row-center {
     font-size: 15px;
 }
-.btn-grv{
+
+.btn-grv {
     width: 100%;
+    line-height: 18px;
+    padding: 1em;
+    /* height: 3.14259em; */
     /* background: white; */
     text-decoration: none;
     border: none;
     border-bottom: 1px ridge #2F231C;
-    line-height: 50px;
     /* float: left; */
 }
-.btn-grv:last-child{
+
+.btn-grv:last-child {
     border-bottom: none;
 }
+
 .question {
     text-align: center;
     font-size: 18px;
-    min-height: 75px;
+    padding: .69em;
 }
+
 /* #user-initials{
     width: 75px;
 
 } */
-#high-score-list{
+
+#high-score-list {
     background: rgba(0, 174, 255, .48);
 }
-.submit-button{
+
+.submit-button {
     border: none;
     text-decoration: none;
 }
-.time-display{
+
+.time-display {
     color: #2F231C;
 }
-.disable-click{
+
+.disable-click {
     pointer-events: none;
 }
-#resource-credits{
+
+#resource-credits {
     font-size: 10px;
     line-height: 10px;
 }

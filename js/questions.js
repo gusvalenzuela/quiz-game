@@ -33,6 +33,9 @@ function pullTriviaQuestions(
   };
   $.ajax(settings).then((r) => {
     // console.log(`AJAX RESPONSE RECEIVED...`)
+    if(r.results[0] === undefined){
+      location.reload(true)
+    }
     console.log(
       `Category is: \n`,
       decodeURIComponent(r.results[0])

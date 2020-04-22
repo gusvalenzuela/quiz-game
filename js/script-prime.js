@@ -131,7 +131,7 @@ function generateBtns() {
       // creating button, setting appropriate attributes and appending to answer group div
       var btn = document.createElement(`button`);
       btn.setAttribute(`type`, `button`);
-      btn.setAttribute(`class`, `col-12 btn-grv p-0`);
+      btn.setAttribute(`class`, `col-12 btn-grv`);
       // bring back the clicking (pointer-event)
       answerGroup.setAttribute(
         `class`,
@@ -149,7 +149,7 @@ function generateBtns() {
 function clearBtns() {
   // simple removal of answerBtns found (for fresh start)
   for (i = 0; i < answerBtns.length; i++) {
-    answerBtns[i].remove();
+    $(answerBtns[i]).remove();
   }
 }
 function changeQuestion() {
@@ -204,7 +204,8 @@ function playQuiz() {
   const qs = questions;
 
   $(`#container-col`).show();
-  $(`#quiz-options-form`).remove();
+  $(`.loading-screen`).hide();
+  $(`#quiz-options-form`).hide();
 
   getLocalInfo();
 
@@ -232,12 +233,12 @@ function rightAnswer() {
   correctCount++;
   gradeDisplay.setAttribute(
     `class`,
-    `col p-0 text-success text-center font-weight-bold`
+    `col text-success text-center font-weight-bold`
   );
   gradeDisplay.textContent = `Correct!`;
   penDisplay.setAttribute(
     `class`,
-    `col p-0 text-success text-center font-weight-bold`
+    `col text-success text-center font-weight-bold`
   );
   penDisplay.textContent = `+10 sec`;
 
@@ -258,12 +259,12 @@ function wrongAnswer() {
   // what if no penalty?
   gradeDisplay.setAttribute(
     `class`,
-    `col p-0 text-danger text-center font-weight-bold`
+    `col text-danger text-center font-weight-bold`
   );
   gradeDisplay.textContent = `Incorrect`;
   penDisplay.setAttribute(
     `class`,
-    `col p-0 text-danger text-center font-weight-bold`
+    `col text-danger text-center font-weight-bold`
   );
   penDisplay.textContent = `-15 sec`;
 
@@ -282,7 +283,7 @@ function gradeAnswer(event) {
   if (el.type === `button`) {
     // checking to see if the selected button's text matches the question's answer
     if (userAnswer === q.answer) {
-      el.setAttribute(`class`, `col-12 btn-grv p-0 bg-success`);
+      el.setAttribute(`class`, `col-12 btn-grv bg-success`);
       rightAnswer();
     } else {
       // if wrong answer selected, find correct answer and highlight it green
@@ -290,11 +291,11 @@ function gradeAnswer(event) {
         var aButtonText = answerBtns[i].textContent;
         if (aButtonText === q.answer) {
           correct = aButtonText; // may later display this or save to display in final score sheet
-          answerBtns[i].setAttribute(`class`, `col-12 btn-grv p-0 bg-success`);
+          answerBtns[i].setAttribute(`class`, `col-12 btn-grv bg-success`);
           // console.log(`correct answer is: ` + correct)
         }
       }
-      el.setAttribute(`class`, `col-12 btn-grv p-0 bg-danger`); // highlight the wrong answer red
+      el.setAttribute(`class`, `col-12 btn-grv bg-danger`); // highlight the wrong answer red
       wrongAnswer();
     }
   } else {
