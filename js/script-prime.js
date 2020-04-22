@@ -112,7 +112,7 @@ function clear() {
   timeElapsed = 0;
   questionText.textContent = "";
   answerBtns.textContent = "";
-  quizTimeDisplay.textContent = "128";
+  quizTimeDisplay.innerHTML = `Time:<br>128`;
 }
 function startTimer() {
   interval = setInterval(function () {
@@ -120,7 +120,7 @@ function startTimer() {
     // display time until t = 0, then endGame
     if (t > 0) {
       timeElapsed++;
-      quizTimeDisplay.textContent = t;
+      quizTimeDisplay.innerHTML = `Time:<br>${t}`;
       // console.log(`time remaining: ` + t + ` - time elapsed: ` + timeElapsed + ` - penalty: ` + timePenalty)
     } else {
       endGame();
@@ -184,7 +184,7 @@ function changeQuestion() {
     }, 1000);
   } else {
     qCount++; // keep count of questions asked and display
-    qCountDisplay.textContent = `Q: ${qCount}/${amtSelected}`;
+    qCountDisplay.innerHTML = `Q #<br> ${qCount}/${amtSelected}`;
     
     var rand = Math.floor(Math.random() * questions.length); // generate random number 0 - questions length ¯\_(ツ)_/¯
     q = currentSet[rand]; // store random selected question in variable q
