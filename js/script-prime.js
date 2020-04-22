@@ -1,25 +1,33 @@
+let amtSelected = 10; //default
+
 quizOptionsForm.addEventListener(`submit`, (e) => {
   e.preventDefault();
-
   const selCat = $(`#quiz-options-select`)[0];
   const selDiff = $(`#select-difficulty`)[0];
   // const amtSelected = $(`#select-amount`).val().trim()
-  const amtSelected = 10;
 
   for (category of questionCategories) {
     if (
       selCat.value.trim() === `(Random Category)` &&
       selDiff.value.trim() !== `Choose...`
     ) {
-      let randomID = Math.floor(Math.random() * questionCategories.length);
-      return pullTriviaQuestions(amtSelected, randomID + 8, selDiff.value.trim().toLowerCase());
+      let randomID = Math.ceil(Math.random() * questionCategories.length);
+      return pullTriviaQuestions(
+        amtSelected,
+        randomID + 8,
+        selDiff.value.trim().toLowerCase()
+      );
     } else if (
       selCat.value.trim() !== `Choose...` &&
       selCat.value.trim() !== null &&
       selCat.value.trim() === category.name &&
       selDiff.value.trim() !== `Choose...`
     ) {
-      return pullTriviaQuestions(amtSelected, category.id, selDiff.value.trim().toLowerCase());
+      return pullTriviaQuestions(
+        amtSelected,
+        category.id,
+        selDiff.value.trim().toLowerCase()
+      );
     }
   }
 });
@@ -89,7 +97,7 @@ function getLocalInfo() {
   }
 
   if (hiScore !== undefined) {
-    navScoreDisplay.textContent = `(Highest Score: ` + hiScore + `)`;
+    navScoreDisplay.textContent = `(Highest Score: ${hiScore})`;
   }
 
   if (storedInitials === null) {
@@ -176,8 +184,8 @@ function changeQuestion() {
     }, 1000);
   } else {
     qCount++; // keep count of questions asked and display
-    qCountDisplay.textContent = `Q:` + qCount;
-
+    qCountDisplay.textContent = `Q: ${qCount}/${amtSelected}`;
+    
     var rand = Math.floor(Math.random() * questions.length); // generate random number 0 - questions length ¯\_(ツ)_/¯
     q = currentSet[rand]; // store random selected question in variable q
     qc = q.choices; // store choices of random question in variable qc
@@ -200,12 +208,13 @@ function changeQuestion() {
     currentSet.splice([rand], 1); // splice the randomly chosen question from the working current set (to avoid choosing it again)
   }
 }
-function playQuiz() {
+function playQuiz(cateName) {
   const qs = questions;
 
   $(`#container-col`).show();
-  $(`.loading-screen`).hide();
-  $(`#quiz-options-form`).hide();
+  $(`#quiz-options-form`).remove();
+  $(categoryName).text(cateName);
+
 
   getLocalInfo();
 

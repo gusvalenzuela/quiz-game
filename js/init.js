@@ -15,6 +15,7 @@ const playBtnCat = document.querySelector(`#play-button-cat`);
 const playBtnDog = document.querySelector(`#play-button-dog`);
 const playBtnSalmon = document.querySelector(`#play-button-salmon`);
 const navBar = document.querySelector(`#navbar`);
+const categoryName = document.querySelector(`#category-name`);
 const qCountDisplay = document.querySelector(`#question-count`);
 const quizOptionsDiv = document.querySelector(`#quiz-options-div`);
 const loadingScreen = document.querySelector(`.loading-screen`);
