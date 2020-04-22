@@ -8,14 +8,13 @@ class QuestionsFull {
 
 // pullTriviaQuestions()
 function pullTriviaQuestions(
-  amt = 15,
+  amt = 10,
   cat = 9,
   diff = `easy`,
   type = `multiple`
 ) {
 
   // console.log(`running pullTrivia...`)
-  console.log(`category random num: `, cat);
   const settings = {
     async: true,
     crossDomain: true,
@@ -34,13 +33,18 @@ function pullTriviaQuestions(
 
   $.ajax(settings).then((r) => {
     // console.log(`AJAX RESPONSE RECEIVED...`)
-    let categoryChosen = r.results[0].category
 
-    if (categoryChosen === undefined) {
-      location.reload()
-      console.log(`something went wrong, here are the results...`, r);
+    
+    if (r.results[0] === undefined) {
+      // console.log(`something went wrong, here are the results...`, r);
+      $(`.selection-screen`).html(`<h1 style="color:white;">OOPS SOMETHING WENT WRONG, REFRESHING THE PAGE.</h1>`)
+      setTimeout(()=>{
+        location.reload()
+
+      }, 2000)
     }
-
+    
+    let categoryChosen = r.results[0].category
     // console.log(r)
     r.results.forEach((item) => {
       let choices = item.incorrect_answers.map((data) =>

@@ -64,9 +64,9 @@ var user = {
 init();
 function init() {
   // quizOptionsDiv.innerHTML = ``
-  $(`#container-col`).hide();
+  $(`.play-screen`).hide();
   $(`.selection-screen`).hide();
-  loadingScreen.innerHTML = `<h1 class="text-white col" style="text-align:center;">LOADING CATEGORIES...</h1>`;
+  loadingScreen.innerHTML = `<h1 style="color: white;">LOADING CATEGORIES...</h1>`;
   getTriviaCategories();
   // getLocalInfo()
 }
@@ -78,7 +78,6 @@ function getTriviaCategories() {
     method: `GET`,
   }).then((catRes) => {
     const categories = catRes.trivia_categories;
-    console.log(categories)
     categories.forEach((item) => questionCategories.push(item));
     generatePlayBtns();
   });

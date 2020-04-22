@@ -211,8 +211,9 @@ function changeQuestion() {
 function playQuiz(cateName) {
   const qs = questions;
 
-  $(`#container-col`).show();
+  $(`.play-screen`).show();
   $(`#quiz-options-form`).remove();
+  $(`.loading-screen`).remove();
   $(categoryName).text(cateName);
 
 
@@ -240,11 +241,11 @@ function rightAnswer() {
   answerGroup.setAttribute(`style`, `text-decoration: none; border:none;`);
   timePenalty = timePenalty - 11; // add time for delay in gradeAnswer()
   correctCount++;
-  gradeDisplay.setAttribute(
-    `class`,
-    `col text-success text-center font-weight-bold`
-  );
-  gradeDisplay.textContent = `Correct!`;
+  // gradeDisplay.setAttribute(
+  //   `class`,
+  //   `col text-success text-center font-weight-bold`
+  // );
+  // gradeDisplay.textContent = `Correct!`;
   penDisplay.setAttribute(
     `class`,
     `col text-success text-center font-weight-bold`
@@ -254,7 +255,7 @@ function rightAnswer() {
   // timeout interval to quickly clear the penalty notification
   setTimeout(function () {
     penDisplay.textContent = ``;
-    gradeDisplay.textContent = ``;
+    // gradeDisplay.textContent = ``;
   }, 1500);
 }
 function wrongAnswer() {
@@ -266,11 +267,11 @@ function wrongAnswer() {
   timePenalty = timePenalty + 14; // add time for delay in gradeAnswer()
   incorrectCount++;
   // what if no penalty?
-  gradeDisplay.setAttribute(
-    `class`,
-    `col text-danger text-center font-weight-bold`
-  );
-  gradeDisplay.textContent = `Incorrect`;
+  // gradeDisplay.setAttribute(
+  //   `class`,
+  //   `col text-danger text-center font-weight-bold`
+  // );
+  // gradeDisplay.textContent = `Incorrect`;
   penDisplay.setAttribute(
     `class`,
     `col text-danger text-center font-weight-bold`
@@ -280,7 +281,7 @@ function wrongAnswer() {
   // timeout interval to quickly clear the penalty notification
   setTimeout(function () {
     penDisplay.textContent = ``;
-    gradeDisplay.textContent = ``;
+    // gradeDisplay.textContent = ``;
   }, 1500);
 }
 function gradeAnswer(event) {
