@@ -14,6 +14,9 @@ function pullTriviaQuestions(
   type = `multiple`
 ) {
 
+  $(`.play-screen`).show();
+  $(`#quiz-options-form`).remove();
+  $(`.loading-screen`).remove();
   // console.log(`running pullTrivia...`)
   const settings = {
     async: true,
@@ -35,15 +38,15 @@ function pullTriviaQuestions(
     // console.log(`AJAX RESPONSE RECEIVED...`)
 
     console.log(`here are the results...`, r);
-    
+
     if (r.results[0] === undefined) {
       $(`.selection-screen`).html(`<h1 style="color:white;">OOPS SOMETHING WENT WRONG, REFRESHING THE PAGE.</h1>`)
-      setTimeout(()=>{
+      setTimeout(() => {
         location.reload()
 
       }, 2000)
     }
-    
+
     let categoryChosen = r.results[0].category
     let difficultyChosen = r.results[0].difficulty
     // console.log(r)
@@ -59,7 +62,9 @@ function pullTriviaQuestions(
       );
       questions.push(itemQues);
     });
-    $(`#category-name`).html(`<h3>${decodeURIComponent(categoryChosen)}</h3> <p style="font-weight: 400; font-style:italic;">${difficultyChosen.toLowerCase()}<p>` )
+    
+    $(`#category-name`).text(`${decodeURIComponent(categoryChosen)}`)
+    $(`#grade-display`).text(`${difficultyChosen.toLowerCase()}`)
     $(`#category-name`).data(`id`, cat)
     playQuiz(decodeURIComponent(categoryChosen, cat));
   });
