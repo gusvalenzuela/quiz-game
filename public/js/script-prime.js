@@ -131,12 +131,12 @@ function startTimer() {
   interval = setInterval(function () {
     t = timer - timeElapsed - timePenalty; // set total time (t)
     // display time until t = 0, then endGame
-    if (t > 0) {
+    if (t < 1) {
+      endGame();
+    } else {
       timeElapsed++;
       quizTimeDisplay.innerHTML = `Time:<br>${t}`;
       // console.log(`time remaining: ` + t + ` - time elapsed: ` + timeElapsed + ` - penalty: ` + timePenalty)
-    } else {
-      endGame();
     }
     // make the timer text red when 10 seconds or under
     // cleared in "endGame()"
@@ -174,7 +174,7 @@ function clearBtns() {
   }
 }
 function changeQuestion() {
-  if (t <= 0) {
+  if (t < 1) {
     return endGame();
   }
   answerGroup.addEventListener(`click`, gradeAnswer);
@@ -227,7 +227,7 @@ function changeQuestion() {
 function playQuiz() {
   const qs = questions;
 
-  getLocalInfo();
+  // getLocalInfo();
 
   // randomizing the order of questions shown each time the quiz is loaded
   for (i = qs.length; i > 0; i--) {
@@ -480,6 +480,8 @@ const enterScoreToDB = () => {
 };
 
 const populateScores = () => {
+  let elementToRemove = $(`#question-text`)[0].parentElement;
+  $(elementToRemove).remove();
   $(`#display-row`).remove();
 
   $.get(`/api/scores`, (results) => {

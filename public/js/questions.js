@@ -37,7 +37,7 @@ function pullTriviaQuestions(
   $.ajax(settings).then((r) => {
     // console.log(`AJAX RESPONSE RECEIVED...`)
 
-    // console.log(`here are the results...`, r.response_code);
+    console.log(`here are the results...`, r.response_code);
     
     if (r.response_code === 1) {
       $(`.selection-screen`).html(`<h1 style="color:white;">OOPS SOMETHING WENT WRONG, REFRESHING THE PAGE.</h1>`)
