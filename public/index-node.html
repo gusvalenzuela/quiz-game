@@ -1,166 +1,117 @@
 <!DOCTYPE html>
 <html lang="en" class="h-100">
-  <head>
-    <meta charset="UTF-8" />
-    <!-- touch zoomies  -->
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <!-- font awesome  -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="./assets/css/style.css" />
-    <title>⁉ Quiz-Down ⁉</title>
-  </head>
 
-  <body class="d-flex flex-column h-100">
-    <!-- navigation bar stickied to top  -->
-    <nav class="navbar navbar-expand-lg bg-grv mb-2" id="navbar">
-      <a
-        class="navbar-brand text-light"
-        data-toggle="modal"
-        data-target="#staticBackdrop"
-        id="brand-link"
-        href="./index.html"
-        >QUIZ-DOWN!?</a
-      >
-      <span class="text-center hi-scr-display" id="hi-scr-display"></span>
-    </nav>
-    <!-- container with main content  -->
-    <main class="container" style="margin: 1em auto;" id="main-main">
-      <!-- loading screen holder  -->
-      <div class="loading-screen col justify-content-center"></div>
-      <!-- selection screen holder wrapped in a form -->
-      <form action="" id="quiz-options-form">
-        <div class="selection-screen">
-          <div class="row justify-content-center">
-            <div class="input-group mb-3 col px-3" id="quiz-category-div">
-              <div class="input-group-prepend">
-                <label
-                  class="input-group-text rounded-0"
-                  for="inputGroupSelect01"
-                  >Category:
-                </label>
-              </div>
+<head>
+  <meta charset="UTF-8" />
+  <!-- touch zoomies  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <!-- font awesome  -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+  <link rel="stylesheet" href="./assets/css/style.css" />
+  <title>⁉ Quiz-Down ⁉</title>
+</head>
+
+<body class="d-flex flex-column h-100">
+  <!-- navigation bar stickied to top  -->
+  <nav class="navbar navbar-expand-lg bg-grv mb-2" id="navbar">
+    <a class="navbar-brand text-light" id="brand-link" href="/">QUIZ-DOWN!?</a>
+
+    <span class="text-center hi-scr-display" id="hi-scr-display"></span>
+  </nav>
+  <!-- container with main content  -->
+  <main class="container" style="margin: 1em auto;" id="main-main">
+    <!-- loading screen holder  -->
+    <div class="loading-screen col justify-content-center"></div>
+    <!-- selection screen holder wrapped in a form -->
+    <form action="" id="quiz-options-form">
+      <div class="selection-screen">
+        <div class="row justify-content-center">
+          <div class="input-group mb-3 col px-3" id="quiz-category-div">
+            <div class="input-group-prepend">
+              <label class="input-group-text rounded-0" for="inputGroupSelect01">Category:
+              </label>
             </div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="input-group mb-3 col px-3" id="quiz-difficulty-div">
-              <div class="input-group-prepend">
-                <label
-                  class="input-group-text rounded-0"
-                  for="inputGroupSelect02"
-                  >Difficulty:
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="mb-3 col-6" id="play-button-div"></div>
-          </div>
-          <div class="row justify-content-center mt-3">
-            <p class="random">
-              Or play a random category on difficulty:
-              <span class="random-modes" id="easy-random">easy</span>,
-              <span class="random-modes" id="medium-random">medium</span>,
-              <span class="random-modes" id="hard-random">hard</span>.
-            </p>
           </div>
         </div>
-      </form>
-      <!-- play screen, where quiz game is played -->
-      <div class="play-screen row justify-content-center">
-        <!-- const mainContainer -->
-        <div
-          class="col-11 col-md-8 col-lg-6 text-break text-wrap text-center top-wrap p-3"
-          id="container-col"
-        >
-          <div class="row mb-2 justify-content-center">
-            <!-- category name div  -->
-            <div
-              class="col-12 mb-3 p-2 category-name text-white"
-              id="category-name"
-            ></div>
-          </div>
-          <!-- grade , time, question, etc. display row -->
-          <div class="row mb-2 justify-content-center" style="height: auto; " id="display-row">
-            <!-- row with three columns:  -->
-            <div class="col top-row bg-grv" id="question-count"></div>
-            <div class="col top-row-center" id="center-display">
-              <div id="grade-display"></div>
-              <div id="penalty-display"></div>
-            </div>
-            <div class="col top-row bg-grv">
-              <div id="time-display"></div>
+        <div class="row justify-content-center">
+          <div class="input-group mb-3 col px-3" id="quiz-difficulty-div">
+            <div class="input-group-prepend">
+              <label class="input-group-text rounded-0" for="inputGroupSelect02">Difficulty:
+              </label>
             </div>
           </div>
-          <div class="row justify-content-between">
-            <div
-              class="col text-white question align-items-center py-2"
-              id="question-text"
-            ></div>
-          </div>
-          <div
-            id="answer-group"
-            class="row btn-group-vertical answer-group w-100"
-            role="group"
-            aria-label="answer-group"
-          ></div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="mb-3 col-6" id="play-button-div"></div>
+        </div>
+        <div class="row justify-content-center mt-3">
+          <p class="random">
+            Or play a random category on:<br>
+            <span class="random-modes" id="easy-random">easy</span>,
+            <span class="random-modes" id="medium-random">medium</span>,
+            <span class="random-modes" id="hard-random">hard</span>.
+          </p>
         </div>
       </div>
-    </main>
+    </form>
+    <!-- play screen, where quiz game is played -->
+    <div class="play-screen row justify-content-center">
+      <!-- const mainContainer -->
+      <div class="col-11 col-md-8 col-lg-6 text-break text-wrap text-center top-wrap p-3" id="container-col">
+        <!-- category name div  -->
+        <i class="col-12 category-name " id="category-name"></i>
+        <!-- grade , time, question, etc. display row -->
+        <div class="row mb-2 justify-content-center" style="height: auto; ">
+          <!-- row with three columns:  -->
+          <div class="col top-row bg-grv" id="question-count"></div>
+          <div class="col top-row-center" id="center-display">
 
-    <!-- footer  -->
-    <footer class="footer container-fluid mt-auto">
-      <div class="container text-center text-muted">
-        <span
-          >&copy; 2020
-          <a
-            href="https://gusvalenzuela.github.io/gusval-site-bs/"
-            class="text-white"
-            >\\ Gus Valenzuela</a
-          >
-          <a
-            href="https://github.com/gusvalenzuela/quiz-game"
-            class="text-white"
-            >\\ code</a
-          ></span
-        >
-        <br />
-        <!-- <span id="resource-credits">Wallpaper by:
+            <div id="grade-display"></div>
+
+          </div>
+          <div class="col top-row bg-grv">
+            <div id="time-display"></div>
+          </div>
+        </div>
+        <div class="row justify-content-between">
+          <div class="col text-white question align-items-center py-2" id="question-text"></div>
+
+        </div>
+        <div class="row" id="penalty-display"></div>
+        <div id="answer-group" class="row btn-group-vertical answer-group w-100" role="group" aria-label="answer-group">
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- footer  -->
+  <footer class="footer container-fluid mt-auto">
+    <div class="container text-center text-muted">
+      <span>&copy; 2020
+        <a href="https://gusvalenzuela.github.io/gusval-site-bs/" class="text-white">\\ Gus Valenzuela</a>
+        <a href="https://github.com/gusvalenzuela/quiz-game" class="text-white">\\ code</a></span>
+      <br />
+      <!-- <span id="resource-credits">Wallpaper by:
                 <a href="https://www.toptal.com/designers/subtlepatterns/what-the-hex-dark/" class="text-white">Angel
                     Micevski</a></span> -->
-      </div>
-    </footer>
-    <!-- bootstrap optional JS  -->
-    <script
-      src="https://code.jquery.com/jquery-3.4.1.js"
-      integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-      crossorigin="anonymous"
-    ></script>
-    <!-- own JS  -->
-    <script defer src="./js/init.js"></script>
-    <script defer src="./js/questions.js" id="questions-script"></script>
-    <script defer src="./js/script-prime.js"></script>
-  </body>
+    </div>
+  </footer>
+  <!-- bootstrap optional JS  -->
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+  <!-- own JS  -->
+  <script defer src="./js/init.js"></script>
+  <script defer src="./js/questions.js" id="questions-script"></script>
+  <script defer src="./js/script-prime.js"></script>
+</body>
+
 </html>

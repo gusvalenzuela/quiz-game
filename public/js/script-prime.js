@@ -224,12 +224,8 @@ function changeQuestion() {
     currentSet.splice([rand], 1); // splice the randomly chosen question from the working current set (to avoid choosing it again)
   }
 }
-function playQuiz(cateName, cateID) {
+function playQuiz() {
   const qs = questions;
-
-  $(`.play-screen`).show();
-  $(`#quiz-options-form`).remove();
-  $(`.loading-screen`).remove();
 
   getLocalInfo();
 

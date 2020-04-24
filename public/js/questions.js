@@ -14,6 +14,9 @@ function pullTriviaQuestions(
   type = `multiple`
 ) {
 
+  $(`.play-screen`).show();
+  $(`#quiz-options-form`).remove();
+  $(`.loading-screen`).remove();
   // console.log(`running pullTrivia...`)
   const settings = {
     async: true,
@@ -38,12 +41,12 @@ function pullTriviaQuestions(
     
     if (r.response_code === 1) {
       $(`.selection-screen`).html(`<h1 style="color:white;">OOPS SOMETHING WENT WRONG, REFRESHING THE PAGE.</h1>`)
-      setTimeout(()=>{
+      setTimeout(() => {
         location.reload()
 
       }, 2000)
     }
-    
+
     let categoryChosen = r.results[0].category
     let difficultyChosen = r.results[0].difficulty
     // console.log(r)
