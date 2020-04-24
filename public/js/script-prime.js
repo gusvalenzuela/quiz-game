@@ -82,57 +82,42 @@ function generatePlayBtns() {
     let randomID = Math.ceil(Math.random() * questionCategories.length) + 8;
     switch ($(event.target).text()) {
       case `medium`:
-        pullTriviaQuestions(
-          amtSelected,
-          randomID,
-          `medium`
-        );
+        pullTriviaQuestions(amtSelected, randomID, `medium`);
         break;
       case `hard`:
-        pullTriviaQuestions(
-          amtSelected,
-          randomID,
-          `hard`
-        );
+        pullTriviaQuestions(amtSelected, randomID, `hard`);
         break;
       default:
-        pullTriviaQuestions(
-          amtSelected,
-          randomID,
-          `easy`
-        );
+        pullTriviaQuestions(amtSelected, randomID, `easy`);
         break;
     }
   });
 }
 
 function getLocalInfo() {
-  storedScores = JSON.parse(
-    localStorage.getItem(someObj.name + `-stored-scores`)
-  );
-  storedInitials = JSON.parse(
-    localStorage.getItem(someObj.name + `-stored-initials`)
-  );
-
-  if (storedScores === null) {
-    storedScores = [];
-  } else {
-    storedScores = storedScores;
-    // find max of all stored scores in array
-    hiScore = storedScores.reduce(function (a, b) {
-      return Math.max(a, b);
-    });
-  }
-
-  if (hiScore !== undefined) {
-    navScoreDisplay.textContent = `(Highest Score: ${hiScore})`;
-  }
-
-  if (storedInitials === null) {
-    storedInitials = [];
-  } else {
-    storedInitials = storedInitials;
-  }
+  // storedScores = JSON.parse(
+  //   localStorage.getItem(someObj.name + `-stored-scores`)
+  // );
+  // storedInitials = JSON.parse(
+  //   localStorage.getItem(someObj.name + `-stored-initials`)
+  // );
+  // if (storedScores === null) {
+  //   storedScores = [];
+  // } else {
+  //   storedScores = storedScores;
+  //   // find max of all stored scores in array
+  //   hiScore = storedScores.reduce(function (a, b) {
+  //     return Math.max(a, b);
+  //   });
+  // }
+  // if (hiScore !== undefined) {
+  //   navScoreDisplay.textContent = `(Highest Score: ${hiScore})`;
+  // }
+  // if (storedInitials === null) {
+  //   storedInitials = [];
+  // } else {
+  //   storedInitials = storedInitials;
+  // }
 }
 // function to clear time and text displayed
 function clear() {
@@ -179,7 +164,7 @@ function generateBtns() {
     answerBtns = answerGroup.querySelectorAll(`button`);
   } else {
     // return nothing if current set has no questions left
-    return;
+    return endGame();
   }
 }
 function clearBtns() {
@@ -189,6 +174,9 @@ function clearBtns() {
   }
 }
 function changeQuestion() {
+  if (t <= 0) {
+    return endGame();
+  }
   answerGroup.addEventListener(`click`, gradeAnswer);
   // endGame if no questions left, else choose and display new question/choices
   if (currentSet.length === 0) {
@@ -265,7 +253,7 @@ function rightAnswer() {
     `row btn-group-vertical answer-group w-100 disable-click`
   ); // disable click with CSS class (gotta be a better way)
   answerGroup.setAttribute(`style`, `text-decoration: none; border:none;`);
-  timePenalty = timePenalty - 11; // add time for delay in gradeAnswer()
+  timePenalty = timePenalty - 11; // add (1sec) for delay in gradeAnswer()
   correctCount++;
   // gradeDisplay.setAttribute(
   //   `class`,
@@ -361,50 +349,54 @@ const endGame = (e) => {
     score = t;
   }
 
-  // i know, i'll clean it later
-  // later, later
-  quizTimeDisplay.setAttribute(`style`, `font-color: white;`);
-  quizTimeDisplay.textContent = `Final Score: ` + score;
-  questionText.textContent = `Enter your initials: `;
-  inputText.setAttribute(`type`, `text`);
-  inputText.setAttribute(`style`, `text-transform: uppercase`);
-  inputText.setAttribute(`id`, `user-initials`);
-  inputText.setAttribute(`name`, `user-initials`);
-  inputText.setAttribute(`class`, `col-12 m-1 text-center`);
-  inputText.setAttribute(`maxlength`, `3`);
-  inputSubmit.setAttribute(`class`, `m-1 btn btn-light btn-sm rounded-0`);
-  inputSubmit.setAttribute(`type`, `submit`);
-  inputSubmit.setAttribute(`id`, `submit-button`);
-  inputSubmit.setAttribute(`value`, `Submit`);
-  var hr = document.createElement(`hr`);
-  questionText.appendChild(inputText);
-  questionText.appendChild(inputSubmit);
-  questionText.appendChild(hr);
-  // button.textContent = `submit`
-  // questionText.appendChild(button)
-  userInput = document.querySelector(`#user-initials`);
-  submitBtn = document.querySelector(`#submit-button`);
+  if (t > 0) {
+    // i know, i'll clean it later
+    // later, later
+    quizTimeDisplay.setAttribute(`style`, `font-color: white;`);
+    quizTimeDisplay.textContent = `Final Score: ` + score;
+    questionText.textContent = `Enter your initials: `;
+    inputText.setAttribute(`type`, `text`);
+    inputText.setAttribute(`style`, `text-transform: uppercase`);
+    inputText.setAttribute(`id`, `user-initials`);
+    inputText.setAttribute(`name`, `user-initials`);
+    inputText.setAttribute(`class`, `col-12 m-1 text-center`);
+    inputText.setAttribute(`maxlength`, `3`);
+    const submitBtn = $(
+      `<input clas="m-1 btn btn-light btn-sm rounded-0" value="Submit">`
+    );
+    var hr = document.createElement(`hr`);
+    $(questionText).append(inputText);
+    $(questionText).append(submitBtn);
+    $(questionText).append(hr);
+    // button.textContent = `submit`
+    // questionText.appendChild(button)
+    userInput = document.querySelector(`#user-initials`);
 
-  submitBtn.addEventListener(`click`, function (e) {
-    e.preventDefault();
-    console.log(inputText.value);
-    if (inputText.value.trim() === "") {
-      alert(`Please enter your initials (Max: 3 Characters)`);
-    } else {
-      submitInitials();
-    }
-  });
+    $(submitBtn).on(`click`, function (e) {
+      e.stopPropagation();
+      console.log(inputText.value);
+      if (inputText.value.trim() === "") {
+        alert(`Please enter your initials (Max: 3 Characters)`);
+      } else {
+        enterScoreToDB();
+        // submitInitials();
+      }
+    });
+  } else {
+    let elementToRemove = $(`#question-text`)[0].parentElement;
+    $(elementToRemove).remove();
+  }
 
   // generateReportCard()
   // console.log(this)
-  hiScoreList();
+  // hiScoreList();
 };
 const hiScoreList = () => {
   var div = document.createElement(`div`);
   div.setAttribute(`class`, ``);
   div.setAttribute(`id`, `high-score-list`);
   div.setAttribute(`class`, `row text-white text-center py-2`);
-  mainContainer.appendChild(div);
+  $(mainContainer).appendChild(div);
   highScoreDiv = document.querySelector(`#high-score-list`);
   // making h4 tag with the score list header
   var h4 = document.createElement(`h4`);
@@ -481,14 +473,62 @@ const enterScoreToDB = () => {
   const newScore = {
     initials: initials,
     score: score,
-    category: 10,
-    category_name: ``,
+    category: $(`#category-name`).data(`catId`),
+    category_name: $(`#category-name`).data(`catName`),
+    createdAt: Date.now(),
   };
 
   $.post(`/submit`, newScore, () => {
-    window.location.href = "/hiscores";
+    populateScores();
   });
 };
+
+const populateScores = () => {
+  $(`#display-row`).remove();
+
+  $.get(`/api/scores`, (results) => {
+    console.log(results);
+
+    let scoreContainer = $(
+      `<div class="row text-white text-center py-2" id="high-score-list">`
+    );
+
+    $(mainContainer).append(scoreContainer);
+    highScoreDiv = document.querySelector(`#high-score-list`);
+
+    // // making h4 tag with the score list header
+    // var h4 = document.createElement(`h4`);
+    // h4.setAttribute(`class`, `text-center col-12`);
+    // h4.textContent = this.name.toUpperCase() + ` HIGH SCORES`;
+    // highScoreDiv.appendChild(h4);
+
+    for (i = 0; i < results.length; i++) {
+      var p = document.createElement(`p`);
+      var icon = document.createElement(`i`);
+      p.setAttribute(`class`, `text-center m-0 col-12`);
+      p.setAttribute(`id`, `score-` + i); // tie ID to index
+      icon.setAttribute(`class`, `fa fa-close mx-2`);
+      icon.setAttribute(`style`, `font-size:14px`);
+      icon.setAttribute(`id`, `close-icon-` + i);
+      icon.setAttribute(`title`, `close-icon`);
+
+      var resultsPrint;
+      var descInitialsPrint;
+
+      if (results[i] < 10) {
+        resultsPrint = `00` + results[i];
+      } else if (results[i] < 100) {
+        resultsPrint = `0` + results[i];
+      }
+
+      // score = parseInt(`0`+score)
+      p.textContent = results[i].initials + ` ` + results[i].score; // sorting in high score but doesnt sort initials with it
+      scoreContainer.append(p);
+      p.prepend(icon);
+    }
+  });
+};
+
 const submitInitials = () => {
   user.initials = userInput.value.toUpperCase();
   var uInit = userInput.value.toUpperCase();
@@ -517,7 +557,7 @@ const submitInitials = () => {
   }
 
   p.textContent = uInit + ` ` + scorePrint;
-  highScoreDiv.appendChild(p);
+  $(highScoreDiv).append(p);
   p.prepend(icon);
 
   localStorage.setItem(`last-user-initials`, uInit);
@@ -537,12 +577,6 @@ const submitInitials = () => {
   // console.log(`Your storedScores is: ` + storedScores)
 };
 
-var someObj = {
-  name: "",
-  xScore: 0,
-  xInitials: "",
-};
-
 function enterInitials(e) {
   // e.preventDefault()
   var keycode = e.keyCode;
@@ -554,7 +588,7 @@ function enterInitials(e) {
   }
 }
 
-inputText.addEventListener(`keyup`, enterInitials);
+// inputText.addEventListener(`keyup`, enterInitials);
 
 brandLink.addEventListener(`click`, function (e) {
   e.preventDefault();

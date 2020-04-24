@@ -26,7 +26,6 @@ const quizOptionsForm = document.querySelector(`#quiz-options-form`);
 // const closeBtn = document.querySelector(`#close-btn`)
 const questionText = document.querySelector(`#question-text`);
 const input = document.createElement(`input`);
-const inputSubmit = document.createElement(`input`);
 const inputText = document.createElement(`input`);
 const button = document.createElement(`button`);
 let userInput;
@@ -51,7 +50,6 @@ let userAnswer,
   storedInitials,
   currentRightSound,
   currentWrongSound;
-let submitBtn;
 let submit = 0;
 let rightAnswerSound = new Audio(currentRightSound);
 let wrongAnswerSound = new Audio(currentWrongSound);

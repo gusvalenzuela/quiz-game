@@ -34,9 +34,9 @@ function pullTriviaQuestions(
   $.ajax(settings).then((r) => {
     // console.log(`AJAX RESPONSE RECEIVED...`)
 
-    console.log(`here are the results...`, r);
+    // console.log(`here are the results...`, r.response_code);
     
-    if (r.results[0] === undefined) {
+    if (r.response_code === 1) {
       $(`.selection-screen`).html(`<h1 style="color:white;">OOPS SOMETHING WENT WRONG, REFRESHING THE PAGE.</h1>`)
       setTimeout(()=>{
         location.reload()
@@ -59,8 +59,10 @@ function pullTriviaQuestions(
       );
       questions.push(itemQues);
     });
-    $(`#category-name`).html(`<h3>${decodeURIComponent(categoryChosen)}</h3> <p style="font-weight: 400; font-style:italic;">${difficultyChosen.toLowerCase()}<p>` )
-    $(`#category-name`).data(`id`, cat)
+    $(`#category-name`).html(`<h3 id="category-name-header">${decodeURIComponent(categoryChosen)}</h3> <p style="font-weight: 400; font-style:italic;">${difficultyChosen.toLowerCase()}<p>` )
+    $(`#category-name`).data(`cat-id`,cat)
+    $(`#category-name`).data(`cat-name`,decodeURIComponent(categoryChosen))
+    // console.log($(`#category-name`).data(`catId`))
     playQuiz(decodeURIComponent(categoryChosen, cat));
   });
 }
