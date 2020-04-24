@@ -22,7 +22,7 @@
     <span class="text-center hi-scr-display" id="hi-scr-display"></span>
   </nav>
   <!-- container with main content  -->
-  <main class="container" style="margin: 1em auto;" id="main-main">
+  <main class="container" style="margin: auto; margin-bottom: 2em;" id="main-main">
     <!-- loading screen holder  -->
     <div class="loading-screen col justify-content-center"></div>
     <!-- selection screen holder wrapped in a form -->
@@ -60,7 +60,6 @@
     <div class="category-row row justify-content-center">
       <!-- category name div  -->
       <b class="col-12 category-name " id="category-name"></b>
-      <i id="difficulty-display"></i>
     </div>
     <!-- play screen, where quiz game is played -->
     <div class="play-screen row justify-content-center">
@@ -72,6 +71,7 @@
           <!-- row with three columns:  -->
           <div class="col top-row bg-grv" id="question-count"></div>
           <div class="col top-row-center" id="center-display">
+            <div class="row" id="penalty-display"></div>
           </div>
           <div class="col top-row bg-grv">
             <div id="time-display"></div>
@@ -81,7 +81,7 @@
           <div class="col text-white question align-items-center py-2" id="question-text"></div>
 
         </div>
-        <div class="row" id="penalty-display"></div>
+
         <div id="answer-group" class="row btn-group-vertical answer-group w-100" role="group" aria-label="answer-group">
         </div>
       </div>

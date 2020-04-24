@@ -1,5 +1,4 @@
 let amtSelected = 10; //default
-
 quizOptionsForm.addEventListener(`submit`, (e) => {
   e.preventDefault();
   const selCat = $(`#quiz-options-select`)[0];
@@ -82,57 +81,42 @@ function generatePlayBtns() {
     let randomID = Math.ceil(Math.random() * questionCategories.length) + 8;
     switch ($(event.target).text()) {
       case `medium`:
-        pullTriviaQuestions(
-          amtSelected,
-          randomID,
-          `medium`
-        );
+        pullTriviaQuestions(amtSelected, randomID, `medium`);
         break;
       case `hard`:
-        pullTriviaQuestions(
-          amtSelected,
-          randomID,
-          `hard`
-        );
+        pullTriviaQuestions(amtSelected, randomID, `hard`);
         break;
       default:
-        pullTriviaQuestions(
-          amtSelected,
-          randomID,
-          `easy`
-        );
+        pullTriviaQuestions(amtSelected, randomID, `easy`);
         break;
     }
   });
 }
 
 function getLocalInfo() {
-  storedScores = JSON.parse(
-    localStorage.getItem(someObj.name + `-stored-scores`)
-  );
-  storedInitials = JSON.parse(
-    localStorage.getItem(someObj.name + `-stored-initials`)
-  );
-
-  if (storedScores === null) {
-    storedScores = [];
-  } else {
-    storedScores = storedScores;
-    // find max of all stored scores in array
-    hiScore = storedScores.reduce(function (a, b) {
-      return Math.max(a, b);
-    });
-  }
-
-  if (hiScore !== undefined) {
-    navScoreDisplay.textContent = `(Highest Score: ${hiScore})`;
-  }
-
-  if (storedInitials === null) {
-    storedInitials = [];
-  } else {
-    storedInitials = storedInitials;
-  }
+  // storedScores = JSON.parse(
+  //   localStorage.getItem(someObj.name + `-stored-scores`)
+  // );
+  // storedInitials = JSON.parse(
+  //   localStorage.getItem(someObj.name + `-stored-initials`)
+  // );
+  // if (storedScores === null) {
+  //   storedScores = [];
+  // } else {
+  //   storedScores = storedScores;
+  //   // find max of all stored scores in array
+  //   hiScore = storedScores.reduce(function (a, b) {
+  //     return Math.max(a, b);
+  //   });
+  // }
+  // if (hiScore !== undefined) {
+  //   navScoreDisplay.textContent = `(Highest Score: ${hiScore})`;
+  // }
+  // if (storedInitials === null) {
+  //   storedInitials = [];
+  // } else {
+  //   storedInitials = storedInitials;
+  // }
 }
 // function to clear time and text displayed
 function clear() {
@@ -140,18 +124,19 @@ function clear() {
   timeElapsed = 0;
   questionText.textContent = "";
   answerBtns.textContent = "";
-  quizTimeDisplay.innerHTML = `Time:<br>128`;
+  $(quizTimeDisplay).html(`256`).attr(`value`,t);
 }
 function startTimer() {
   interval = setInterval(function () {
-    t = timer - timeElapsed - timePenalty; // set total time (t)
-    // display time until t = 0, then endGame
-    if (t > 0) {
+    if (t < 1) {
+      t = timer - timeElapsed - timePenalty; // set total time (t)
+      // display time until t = 0, then endGame
+      $(quizTimeDisplay).html(t).attr(`value`,t)
+      // quizTimeDisplay.innerHTML = `${t}`;
       timeElapsed++;
-      quizTimeDisplay.innerHTML = `Time:<br>${t}`;
-      // console.log(`time remaining: ` + t + ` - time elapsed: ` + timeElapsed + ` - penalty: ` + timePenalty)
-    } else {
       endGame();
+    } else {
+      // console.log(`time remaining: ` + t + ` - time elapsed: ` + timeElapsed + ` - penalty: ` + timePenalty)
     }
     // make the timer text red when 10 seconds or under
     // cleared in "endGame()"
@@ -179,7 +164,7 @@ function generateBtns() {
     answerBtns = answerGroup.querySelectorAll(`button`);
   } else {
     // return nothing if current set has no questions left
-    return;
+    return endGame();
   }
 }
 function clearBtns() {
@@ -189,6 +174,10 @@ function clearBtns() {
   }
 }
 function changeQuestion() {
+
+  if (t < 1) {
+    return endGame();
+  }
   answerGroup.addEventListener(`click`, gradeAnswer);
   // endGame if no questions left, else choose and display new question/choices
   if (currentSet.length === 0) {
@@ -202,17 +191,17 @@ function changeQuestion() {
     quizTimeDisplay.textContent = "";
     questionText.textContent = "";
     answerGroup.remove();
-    difficultyDisplay.remove();
+    gradeDisplay.remove();
     qCountDisplay.remove();
     centerDisplay.remove();
 
-    // delay to allow for score change
+    // delay to allow for _____
     setTimeout(function () {
       endGame();
-    }, 1000);
+    }, 500);
   } else {
     qCount++; // keep count of questions asked and display
-    qCountDisplay.innerHTML = `Q #<br> ${qCount}/${amtSelected}`;
+    qCountDisplay.innerHTML = `${qCount}/${amtSelected}`;
 
     var rand = Math.floor(Math.random() * questions.length); // generate random number 0 - questions length ¯\_(ツ)_/¯
     q = currentSet[rand]; // store random selected question in variable q
@@ -239,7 +228,7 @@ function changeQuestion() {
 function playQuiz() {
   const qs = questions;
 
-  getLocalInfo();
+  // getLocalInfo();
 
   // randomizing the order of questions shown each time the quiz is loaded
   for (i = qs.length; i > 0; i--) {
@@ -261,24 +250,24 @@ function rightAnswer() {
     `row btn-group-vertical answer-group w-100 disable-click`
   ); // disable click with CSS class (gotta be a better way)
   answerGroup.setAttribute(`style`, `text-decoration: none; border:none;`);
-  timePenalty = timePenalty - 11; // add time for delay in gradeAnswer()
+  timePenalty = timePenalty - 10; // add (2sec) for delay in gradeAnswer()
   correctCount++;
-  // difficultyDisplay.setAttribute(
+  // gradeDisplay.setAttribute(
   //   `class`,
   //   `col text-success text-center font-weight-bold`
   // );
-  // difficultyDisplay.textContent = `Correct!`;
+  // gradeDisplay.textContent = `Correct!`;
   penDisplay.setAttribute(
     `class`,
-    `col text-success text-center font-weight-bold`
+    `col text-success`
   );
   penDisplay.textContent = `+10 sec`;
 
   // timeout interval to quickly clear the penalty notification
   setTimeout(function () {
     penDisplay.textContent = ``;
-    // difficultyDisplay.textContent = ``;
-  }, 1500);
+    // gradeDisplay.textContent = ``;
+  }, 2000);
 }
 function wrongAnswer() {
   wrongAnswerSound.play(); // playing sound effect
@@ -286,33 +275,35 @@ function wrongAnswer() {
     `class`,
     `row btn-group-vertical answer-group w-100 disable-click`
   ); // disable click with CSS class (gotta be a better way)
-  timePenalty = timePenalty + 14; // add time for delay in gradeAnswer()
+  timePenalty = timePenalty + 15; // add time (2sec) for delay in gradeAnswer()
   incorrectCount++;
   // what if no penalty?
-  // difficultyDisplay.setAttribute(
+  // gradeDisplay.setAttribute(
   //   `class`,
   //   `col text-danger text-center font-weight-bold`
   // );
-  // difficultyDisplay.textContent = `Incorrect`;
+  // gradeDisplay.textContent = `Incorrect`;
   penDisplay.setAttribute(
     `class`,
-    `col text-danger text-center font-weight-bold`
+    `col text-danger`
   );
   penDisplay.textContent = `-15 sec`;
 
   // timeout interval to quickly clear the penalty notification
   setTimeout(function () {
     penDisplay.textContent = ``;
-    // difficultyDisplay.textContent = ``;
-  }, 1500);
+    // gradeDisplay.textContent = ``;
+  }, 2000);
 }
 function gradeAnswer(event) {
-  event.preventDefault();
+  event.stopPropagation();
   var el = event.target;
   userAnswer = el.textContent;
 
   // just checking if button - in case i change CSS around it
   if (el.type === `button`) {
+    // $(el).addClass(`disable-click`)
+    clearInterval(interval)
     // checking to see if the selected button's text matches the question's answer
     if (userAnswer === q.answer) {
       el.setAttribute(`class`, `col-12 btn-grv bg-success`);
@@ -335,18 +326,19 @@ function gradeAnswer(event) {
   }
   // timeout of 1sec to display right/wrong answer to user (via button background color)
   setTimeout(function () {
+    startTimer()
     // after grading each answer we clear the buttons and generate new ones, to reset any formatting
     clearBtns();
     generateBtns();
     // go on to the next question
     changeQuestion();
-  }, 1000);
+  }, 2000);
 }
 const endGame = (e) => {
   clearInterval(interval);
   clearBtns();
   answerGroup.remove();
-  difficultyDisplay.remove();
+  // gradeDisplay.remove();
   qCountDisplay.remove();
   centerDisplay.remove();
 
@@ -357,50 +349,49 @@ const endGame = (e) => {
     score = t;
   }
 
-  // i know, i'll clean it later
-  // later, later
-  quizTimeDisplay.setAttribute(`style`, `font-color: white;`);
-  quizTimeDisplay.textContent = `Final Score: ` + score;
-  questionText.textContent = `Enter your initials: `;
-  inputText.setAttribute(`type`, `text`);
-  inputText.setAttribute(`style`, `text-transform: uppercase`);
-  inputText.setAttribute(`id`, `user-initials`);
-  inputText.setAttribute(`name`, `user-initials`);
-  inputText.setAttribute(`class`, `col-12 m-1 text-center`);
-  inputText.setAttribute(`maxlength`, `3`);
-  inputSubmit.setAttribute(`class`, `m-1 btn btn-light btn-sm rounded-0`);
-  inputSubmit.setAttribute(`type`, `submit`);
-  inputSubmit.setAttribute(`id`, `submit-button`);
-  inputSubmit.setAttribute(`value`, `Submit`);
-  var hr = document.createElement(`hr`);
-  questionText.appendChild(inputText);
-  questionText.appendChild(inputSubmit);
-  questionText.appendChild(hr);
-  // button.textContent = `submit`
-  // questionText.appendChild(button)
-  userInput = document.querySelector(`#user-initials`);
-  submitBtn = document.querySelector(`#submit-button`);
+  if (t > 0) {
 
-  submitBtn.addEventListener(`click`, function (e) {
-    e.preventDefault();
-    console.log(inputText.value);
-    if (inputText.value.trim() === "") {
-      alert(`Please enter your initials (Max: 3 Characters)`);
-    } else {
-      submitInitials();
-    }
-  });
+    $(quizTimeDisplay).attr(`style`, `font-color: white;`).text(`Final Score: ${score}`);
+    $(questionText).text(`Enter your initials:`);
+    const inputText = $(`<input>`).attr(`type`, `text`)
+      .attr(`style`, `text-transform: uppercase`)
+      .attr(`id`, `user-initials`)
+      .attr(`name`, `user-initials`)
+      .attr(`class`, `col-12 m-1 text-center`)
+      .attr(`maxlength`, `3`)
+    const submitBtn = $(
+      `<input class="m-1 btn btn-light btn-sm rounded-0" value="Submit">`
+    );
+    $(questionText).append(inputText, submitBtn, $(`<hr>`))
+    // button.textContent = `submit`
+    // questionText.appendChild(button)
+    userInput = document.querySelector(`#user-initials`);
+
+    $(submitBtn).on(`click`, function (e) {
+      e.stopPropagation();
+      console.log(inputText.value);
+      if (inputText.value.trim() === "") {
+        alert(`Please enter your initials (Max: 3 Characters)`);
+      } else {
+        enterScoreToDB();
+        // submitInitials();
+      }
+    });
+  } else {
+    let elementToRemove = $(`#question-text`)[0].parentElement;
+    $(elementToRemove).remove();
+  }
 
   // generateReportCard()
   // console.log(this)
-  hiScoreList();
+  // hiScoreList();
 };
 const hiScoreList = () => {
   var div = document.createElement(`div`);
   div.setAttribute(`class`, ``);
   div.setAttribute(`id`, `high-score-list`);
   div.setAttribute(`class`, `row text-white text-center py-2`);
-  mainContainer.appendChild(div);
+  $(mainContainer).appendChild(div);
   highScoreDiv = document.querySelector(`#high-score-list`);
   // making h4 tag with the score list header
   var h4 = document.createElement(`h4`);
@@ -477,14 +468,64 @@ const enterScoreToDB = () => {
   const newScore = {
     initials: initials,
     score: score,
-    category: 10,
-    category_name: ``,
+    category: $(`#category-name`).data(`catId`),
+    category_name: $(`#category-name`).data(`catName`),
+    dateEntered: Date.now(),
   };
 
   $.post(`/submit`, newScore, () => {
-    window.location.href = "/hiscores";
+    populateScores();
   });
 };
+
+const populateScores = () => {
+  let elementToRemove = $(`#question-text`)[0].parentElement;
+  $(elementToRemove).remove();
+  $(`#display-row`).remove();
+
+  $.get(`/api/scores`, (results) => {
+    console.log(results);
+
+    let scoreContainer = $(
+      `<div class="row text-white text-center py-2" id="high-score-list">`
+    );
+
+    $(mainContainer).append(scoreContainer);
+    highScoreDiv = document.querySelector(`#high-score-list`);
+
+    // // making h4 tag with the score list header
+    // var h4 = document.createElement(`h4`);
+    // h4.setAttribute(`class`, `text-center col-12`);
+    // h4.textContent = this.name.toUpperCase() + ` HIGH SCORES`;
+    // highScoreDiv.appendChild(h4);
+
+    for (i = 0; i < results.length; i++) {
+      var p = document.createElement(`p`);
+      var icon = document.createElement(`i`);
+      p.setAttribute(`class`, `text-center m-0 col-12`);
+      p.setAttribute(`id`, `score-` + i); // tie ID to index
+      icon.setAttribute(`class`, `fa fa-close mx-2`);
+      icon.setAttribute(`style`, `font-size:14px`);
+      icon.setAttribute(`id`, `close-icon-` + i);
+      icon.setAttribute(`title`, `close-icon`);
+
+      var resultsPrint;
+      var descInitialsPrint;
+
+      if (results[i] < 10) {
+        resultsPrint = `00` + results[i];
+      } else if (results[i] < 100) {
+        resultsPrint = `0` + results[i];
+      }
+
+      // score = parseInt(`0`+score)
+      p.textContent = results[i].initials + ` ` + results[i].score; // sorting in high score but doesnt sort initials with it
+      scoreContainer.append(p);
+      p.prepend(icon);
+    }
+  });
+};
+
 const submitInitials = () => {
   user.initials = userInput.value.toUpperCase();
   var uInit = userInput.value.toUpperCase();
@@ -513,7 +554,7 @@ const submitInitials = () => {
   }
 
   p.textContent = uInit + ` ` + scorePrint;
-  highScoreDiv.appendChild(p);
+  $(highScoreDiv).append(p);
   p.prepend(icon);
 
   localStorage.setItem(`last-user-initials`, uInit);
@@ -533,12 +574,6 @@ const submitInitials = () => {
   // console.log(`Your storedScores is: ` + storedScores)
 };
 
-var someObj = {
-  name: "",
-  xScore: 0,
-  xInitials: "",
-};
-
 function enterInitials(e) {
   // e.preventDefault()
   var keycode = e.keyCode;
@@ -550,7 +585,7 @@ function enterInitials(e) {
   }
 }
 
-inputText.addEventListener(`keyup`, enterInitials);
+// inputText.addEventListener(`keyup`, enterInitials);
 
 brandLink.addEventListener(`click`, function (e) {
   e.preventDefault();

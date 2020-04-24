@@ -27,7 +27,7 @@ app.get("/test", (req, res) => {
   res.sendFile(path.join(__dirname + "/public/index-test.html"));
 });
 
-app.get("/scores", (req, res) => {
+app.get("/api/scores", (req, res) => {
   db.Score.find({})
     .then((dbScores) => {
       res.json(dbScores);
@@ -51,7 +51,7 @@ app.post("/submit/", ({ body }, res) => {
   console.log(body)
   db.Score.create(body)
     .then(({ _id }) =>
-      db.Quiz.findOneAndUpdate({category: body.category}, { $push: { scores: _id } })
+      db.Quiz.create({category: body.category}, { $push: { scores: _id } })
     )
     .then((dbScores) => {
       res.json(dbScores);
