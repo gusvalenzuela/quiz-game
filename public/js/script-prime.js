@@ -202,7 +202,7 @@ function changeQuestion() {
     quizTimeDisplay.textContent = "";
     questionText.textContent = "";
     answerGroup.remove();
-    gradeDisplay.remove();
+    difficultyDisplay.remove();
     qCountDisplay.remove();
     centerDisplay.remove();
 
@@ -263,11 +263,11 @@ function rightAnswer() {
   answerGroup.setAttribute(`style`, `text-decoration: none; border:none;`);
   timePenalty = timePenalty - 11; // add time for delay in gradeAnswer()
   correctCount++;
-  // gradeDisplay.setAttribute(
+  // difficultyDisplay.setAttribute(
   //   `class`,
   //   `col text-success text-center font-weight-bold`
   // );
-  // gradeDisplay.textContent = `Correct!`;
+  // difficultyDisplay.textContent = `Correct!`;
   penDisplay.setAttribute(
     `class`,
     `col text-success text-center font-weight-bold`
@@ -277,7 +277,7 @@ function rightAnswer() {
   // timeout interval to quickly clear the penalty notification
   setTimeout(function () {
     penDisplay.textContent = ``;
-    // gradeDisplay.textContent = ``;
+    // difficultyDisplay.textContent = ``;
   }, 1500);
 }
 function wrongAnswer() {
@@ -289,11 +289,11 @@ function wrongAnswer() {
   timePenalty = timePenalty + 14; // add time for delay in gradeAnswer()
   incorrectCount++;
   // what if no penalty?
-  // gradeDisplay.setAttribute(
+  // difficultyDisplay.setAttribute(
   //   `class`,
   //   `col text-danger text-center font-weight-bold`
   // );
-  // gradeDisplay.textContent = `Incorrect`;
+  // difficultyDisplay.textContent = `Incorrect`;
   penDisplay.setAttribute(
     `class`,
     `col text-danger text-center font-weight-bold`
@@ -303,7 +303,7 @@ function wrongAnswer() {
   // timeout interval to quickly clear the penalty notification
   setTimeout(function () {
     penDisplay.textContent = ``;
-    // gradeDisplay.textContent = ``;
+    // difficultyDisplay.textContent = ``;
   }, 1500);
 }
 function gradeAnswer(event) {
@@ -346,7 +346,7 @@ const endGame = (e) => {
   clearInterval(interval);
   clearBtns();
   answerGroup.remove();
-  gradeDisplay.remove();
+  difficultyDisplay.remove();
   qCountDisplay.remove();
   centerDisplay.remove();
 

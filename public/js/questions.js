@@ -64,7 +64,7 @@ function pullTriviaQuestions(
     });
     
     $(`#category-name`).text(`${decodeURIComponent(categoryChosen)}`)
-    $(`#grade-display`).text(`${difficultyChosen.toLowerCase()}`)
+    $(`#difficulty-display`).text(`${difficultyChosen.toLowerCase()}`)
     $(`#category-name`).data(`id`, cat)
     playQuiz(decodeURIComponent(categoryChosen, cat));
   });
