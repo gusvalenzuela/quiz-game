@@ -1,5 +1,4 @@
 let amtSelected = 10; //default
-
 quizOptionsForm.addEventListener(`submit`, (e) => {
   e.preventDefault();
   const selCat = $(`#quiz-options-select`)[0];
@@ -125,17 +124,18 @@ function clear() {
   timeElapsed = 0;
   questionText.textContent = "";
   answerBtns.textContent = "";
-  quizTimeDisplay.innerHTML = `Time:<br>128`;
+  $(quizTimeDisplay).html(`256`).attr(`value`,t);
 }
 function startTimer() {
   interval = setInterval(function () {
-    t = timer - timeElapsed - timePenalty; // set total time (t)
-    // display time until t = 0, then endGame
     if (t < 1) {
+      t = timer - timeElapsed - timePenalty; // set total time (t)
+      // display time until t = 0, then endGame
+      $(quizTimeDisplay).html(t).attr(`value`,t)
+      // quizTimeDisplay.innerHTML = `${t}`;
+      timeElapsed++;
       endGame();
     } else {
-      timeElapsed++;
-      quizTimeDisplay.innerHTML = `Time:<br>${t}`;
       // console.log(`time remaining: ` + t + ` - time elapsed: ` + timeElapsed + ` - penalty: ` + timePenalty)
     }
     // make the timer text red when 10 seconds or under
@@ -174,6 +174,7 @@ function clearBtns() {
   }
 }
 function changeQuestion() {
+
   if (t < 1) {
     return endGame();
   }
@@ -194,13 +195,13 @@ function changeQuestion() {
     qCountDisplay.remove();
     centerDisplay.remove();
 
-    // delay to allow for score change
+    // delay to allow for _____
     setTimeout(function () {
       endGame();
-    }, 1000);
+    }, 500);
   } else {
     qCount++; // keep count of questions asked and display
-    qCountDisplay.innerHTML = `Q #<br> ${qCount}/${amtSelected}`;
+    qCountDisplay.innerHTML = `${qCount}/${amtSelected}`;
 
     var rand = Math.floor(Math.random() * questions.length); // generate random number 0 - questions length ¯\_(ツ)_/¯
     q = currentSet[rand]; // store random selected question in variable q
@@ -249,7 +250,7 @@ function rightAnswer() {
     `row btn-group-vertical answer-group w-100 disable-click`
   ); // disable click with CSS class (gotta be a better way)
   answerGroup.setAttribute(`style`, `text-decoration: none; border:none;`);
-  timePenalty = timePenalty - 11; // add (1sec) for delay in gradeAnswer()
+  timePenalty = timePenalty - 10; // add (2sec) for delay in gradeAnswer()
   correctCount++;
   // gradeDisplay.setAttribute(
   //   `class`,
@@ -258,7 +259,7 @@ function rightAnswer() {
   // gradeDisplay.textContent = `Correct!`;
   penDisplay.setAttribute(
     `class`,
-    `col text-success text-center font-weight-bold`
+    `col text-success`
   );
   penDisplay.textContent = `+10 sec`;
 
@@ -266,7 +267,7 @@ function rightAnswer() {
   setTimeout(function () {
     penDisplay.textContent = ``;
     // gradeDisplay.textContent = ``;
-  }, 1500);
+  }, 2000);
 }
 function wrongAnswer() {
   wrongAnswerSound.play(); // playing sound effect
@@ -274,7 +275,7 @@ function wrongAnswer() {
     `class`,
     `row btn-group-vertical answer-group w-100 disable-click`
   ); // disable click with CSS class (gotta be a better way)
-  timePenalty = timePenalty + 14; // add time for delay in gradeAnswer()
+  timePenalty = timePenalty + 15; // add time (2sec) for delay in gradeAnswer()
   incorrectCount++;
   // what if no penalty?
   // gradeDisplay.setAttribute(
@@ -284,7 +285,7 @@ function wrongAnswer() {
   // gradeDisplay.textContent = `Incorrect`;
   penDisplay.setAttribute(
     `class`,
-    `col text-danger text-center font-weight-bold`
+    `col text-danger`
   );
   penDisplay.textContent = `-15 sec`;
 
@@ -292,15 +293,17 @@ function wrongAnswer() {
   setTimeout(function () {
     penDisplay.textContent = ``;
     // gradeDisplay.textContent = ``;
-  }, 1500);
+  }, 2000);
 }
 function gradeAnswer(event) {
-  event.preventDefault();
+  event.stopPropagation();
   var el = event.target;
   userAnswer = el.textContent;
 
   // just checking if button - in case i change CSS around it
   if (el.type === `button`) {
+    // $(el).addClass(`disable-click`)
+    clearInterval(interval)
     // checking to see if the selected button's text matches the question's answer
     if (userAnswer === q.answer) {
       el.setAttribute(`class`, `col-12 btn-grv bg-success`);
@@ -323,18 +326,19 @@ function gradeAnswer(event) {
   }
   // timeout of 1sec to display right/wrong answer to user (via button background color)
   setTimeout(function () {
+    startTimer()
     // after grading each answer we clear the buttons and generate new ones, to reset any formatting
     clearBtns();
     generateBtns();
     // go on to the next question
     changeQuestion();
-  }, 1000);
+  }, 2000);
 }
 const endGame = (e) => {
   clearInterval(interval);
   clearBtns();
   answerGroup.remove();
-  gradeDisplay.remove();
+  // gradeDisplay.remove();
   qCountDisplay.remove();
   centerDisplay.remove();
 
@@ -346,24 +350,19 @@ const endGame = (e) => {
   }
 
   if (t > 0) {
-    // i know, i'll clean it later
-    // later, later
-    quizTimeDisplay.setAttribute(`style`, `font-color: white;`);
-    quizTimeDisplay.textContent = `Final Score: ` + score;
-    questionText.textContent = `Enter your initials: `;
-    inputText.setAttribute(`type`, `text`);
-    inputText.setAttribute(`style`, `text-transform: uppercase`);
-    inputText.setAttribute(`id`, `user-initials`);
-    inputText.setAttribute(`name`, `user-initials`);
-    inputText.setAttribute(`class`, `col-12 m-1 text-center`);
-    inputText.setAttribute(`maxlength`, `3`);
+
+    $(quizTimeDisplay).attr(`style`, `font-color: white;`).text(`Final Score: ${score}`);
+    $(questionText).text(`Enter your initials:`);
+    const inputText = $(`<input>`).attr(`type`, `text`)
+      .attr(`style`, `text-transform: uppercase`)
+      .attr(`id`, `user-initials`)
+      .attr(`name`, `user-initials`)
+      .attr(`class`, `col-12 m-1 text-center`)
+      .attr(`maxlength`, `3`)
     const submitBtn = $(
-      `<input clas="m-1 btn btn-light btn-sm rounded-0" value="Submit">`
+      `<input class="m-1 btn btn-light btn-sm rounded-0" value="Submit">`
     );
-    var hr = document.createElement(`hr`);
-    $(questionText).append(inputText);
-    $(questionText).append(submitBtn);
-    $(questionText).append(hr);
+    $(questionText).append(inputText, submitBtn, $(`<hr>`))
     // button.textContent = `submit`
     // questionText.appendChild(button)
     userInput = document.querySelector(`#user-initials`);
@@ -471,7 +470,7 @@ const enterScoreToDB = () => {
     score: score,
     category: $(`#category-name`).data(`catId`),
     category_name: $(`#category-name`).data(`catName`),
-    createdAt: Date.now(),
+    dateEntered: Date.now(),
   };
 
   $.post(`/submit`, newScore, () => {

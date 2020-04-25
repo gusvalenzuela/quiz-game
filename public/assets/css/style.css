@@ -81,18 +81,21 @@ h4{
 
 #grade-display,
 #penalty-display {
-  font-size: 22px;
+  font-size: 18px;
+  text-align: center;
+  font-weight: 700;
   color: whitesmoke;
+  line-height: 1.2em;
 }
 .category-name {
+  text-align: center;
   /* display: inline-block; */
   color: whitesmoke;
-  font-weight: 400;
-  font-style: italic;
+  font-weight: 600;
+  margin-bottom: 1em;
 }
 .category-name > * {
   margin: 0;
-  
 }
 
 .bg-grv {
@@ -109,13 +112,14 @@ h4{
 
 .top-row {
   color: white;
-  font-size: 1.5em;
+  font-size: 2.25em;
   font-weight: 700;
   padding: .2em .5em;
+  line-height: 1.5em;
 }
 
 .top-row-center {
-  font-size: 15px;
+  font-size: 12px;
 }
 
 .btn-grv {
@@ -138,7 +142,7 @@ h4{
   text-align: center;
   font-size: 18px;
   padding: 1em;
-  margin: 1em 0;
+  margin: 0 0 1em 0;
 }
 
 /* #user-initials{
@@ -193,16 +197,8 @@ h4{
 }
 
 @media screen and (max-width: 576px) {
-  #grade-display h4,
-  #penalty-display{
-    font-size: .75em;
-    font-weight: 500;
-
-  }
   /* .question, */
   .top-row {
-    font-size: 1em;
+    font-size: 1.5em;
   }
-
-  
 }
