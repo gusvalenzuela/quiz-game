@@ -92,6 +92,32 @@ function generatePlayBtns() {
     }
   });
 }
+
+function getLocalInfo() {
+  // storedScores = JSON.parse(
+  //   localStorage.getItem(someObj.name + `-stored-scores`)
+  // );
+  // storedInitials = JSON.parse(
+  //   localStorage.getItem(someObj.name + `-stored-initials`)
+  // );
+  // if (storedScores === null) {
+  //   storedScores = [];
+  // } else {
+  //   storedScores = storedScores;
+  //   // find max of all stored scores in array
+  //   hiScore = storedScores.reduce(function (a, b) {
+  //     return Math.max(a, b);
+  //   });
+  // }
+  // if (hiScore !== undefined) {
+  //   navScoreDisplay.textContent = `(Highest Score: ${hiScore})`;
+  // }
+  // if (storedInitials === null) {
+  //   storedInitials = [];
+  // } else {
+  //   storedInitials = storedInitials;
+  // }
+}
 // function to clear time and text displayed
 function clear() {
   timePenalty = 0;
@@ -110,6 +136,7 @@ function startTimer() {
       // console.log(`time remaining: ` + t + ` - time elapsed: ` + timeElapsed + ` - penalty: ` + timePenalty)
     }
     // make the timer text red when 10 seconds or under
+    // cleared in "endGame()"
     if (t <= 10) {
       quizTimeDisplay.setAttribute(`style`, `color: red;`);
     }
@@ -309,7 +336,7 @@ const endGame = (e) => {
   clearInterval(interval);
   clearBtns();
   answerGroup.remove();
-  gradeDisplay.remove();
+  // gradeDisplay.remove();
   qCountDisplay.remove();
   centerDisplay.remove();
 
@@ -320,8 +347,6 @@ const endGame = (e) => {
     score = t;
   }
 
-  
-  console.log(t)
   if (t > 0) {
     $(quizTimeDisplay)
       .attr(`style`, `font-color: white;`)

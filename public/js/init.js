@@ -69,6 +69,10 @@ function init() {
   
 }
 
+$(quizTimeDisplay).dblclick(()=>{
+  endGame()
+})
+
 function getTriviaCategories() {
   $.ajax({
     async: true,
