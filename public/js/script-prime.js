@@ -124,18 +124,15 @@ function clear() {
   timeElapsed = 0;
   questionText.textContent = "";
   answerBtns.textContent = "";
-  $(quizTimeDisplay).html(`256`).attr(`value`,t);
+  $(quizTimeDisplay).html(`256`).attr(`value`, t);
 }
 function startTimer() {
   interval = setInterval(function () {
-    if (t < 1) {
-      t = timer - timeElapsed - timePenalty; // set total time (t)
-      // display time until t = 0, then endGame
-      $(quizTimeDisplay).html(t).attr(`value`,t)
-      // quizTimeDisplay.innerHTML = `${t}`;
-      timeElapsed++;
-      endGame();
+    if (t > 1) {
+      ++timeElapsed;
+      updateTimerandDisplay();
     } else {
+      endGame();
       // console.log(`time remaining: ` + t + ` - time elapsed: ` + timeElapsed + ` - penalty: ` + timePenalty)
     }
     // make the timer text red when 10 seconds or under
@@ -174,7 +171,6 @@ function clearBtns() {
   }
 }
 function changeQuestion() {
-
   if (t < 1) {
     return endGame();
   }
@@ -243,6 +239,11 @@ function playQuiz() {
   startTimer();
   changeQuestion();
 }
+const updateTimerandDisplay = () => {
+  t = timer - timeElapsed - timePenalty; // set total time (t)
+  // display time until t = 0, then endGame
+  $(quizTimeDisplay).html(t).attr(`value`, t);
+};
 function rightAnswer() {
   rightAnswerSound.play(); // playing sound effect
   answerGroup.setAttribute(
@@ -251,16 +252,15 @@ function rightAnswer() {
   ); // disable click with CSS class (gotta be a better way)
   answerGroup.setAttribute(`style`, `text-decoration: none; border:none;`);
   timePenalty = timePenalty - 10; // add (2sec) for delay in gradeAnswer()
+
+  updateTimerandDisplay();
   correctCount++;
   // gradeDisplay.setAttribute(
   //   `class`,
   //   `col text-success text-center font-weight-bold`
   // );
   // gradeDisplay.textContent = `Correct!`;
-  penDisplay.setAttribute(
-    `class`,
-    `col text-success`
-  );
+  penDisplay.setAttribute(`class`, `col text-success`);
   penDisplay.textContent = `+10 sec`;
 
   // timeout interval to quickly clear the penalty notification
@@ -276,6 +276,7 @@ function wrongAnswer() {
     `row btn-group-vertical answer-group w-100 disable-click`
   ); // disable click with CSS class (gotta be a better way)
   timePenalty = timePenalty + 15; // add time (2sec) for delay in gradeAnswer()
+  updateTimerandDisplay();
   incorrectCount++;
   // what if no penalty?
   // gradeDisplay.setAttribute(
@@ -283,10 +284,7 @@ function wrongAnswer() {
   //   `col text-danger text-center font-weight-bold`
   // );
   // gradeDisplay.textContent = `Incorrect`;
-  penDisplay.setAttribute(
-    `class`,
-    `col text-danger`
-  );
+  penDisplay.setAttribute(`class`, `col text-danger`);
   penDisplay.textContent = `-15 sec`;
 
   // timeout interval to quickly clear the penalty notification
@@ -296,14 +294,14 @@ function wrongAnswer() {
   }, 2000);
 }
 function gradeAnswer(event) {
-  event.stopPropagation();
+  event.preventDefault();
   var el = event.target;
   userAnswer = el.textContent;
 
   // just checking if button - in case i change CSS around it
   if (el.type === `button`) {
     // $(el).addClass(`disable-click`)
-    clearInterval(interval)
+    clearInterval(interval);
     // checking to see if the selected button's text matches the question's answer
     if (userAnswer === q.answer) {
       el.setAttribute(`class`, `col-12 btn-grv bg-success`);
@@ -326,13 +324,13 @@ function gradeAnswer(event) {
   }
   // timeout of 1sec to display right/wrong answer to user (via button background color)
   setTimeout(function () {
-    startTimer()
+    startTimer();
     // after grading each answer we clear the buttons and generate new ones, to reset any formatting
     clearBtns();
     generateBtns();
     // go on to the next question
     changeQuestion();
-  }, 2000);
+  }, 1500);
 }
 const endGame = (e) => {
   clearInterval(interval);
@@ -350,19 +348,21 @@ const endGame = (e) => {
   }
 
   if (t > 0) {
-
-    $(quizTimeDisplay).attr(`style`, `font-color: white;`).text(`Final Score: ${score}`);
+    $(quizTimeDisplay)
+      .attr(`style`, `font-color: white;`)
+      .text(`Final Score: ${score}`);
     $(questionText).text(`Enter your initials:`);
-    const inputText = $(`<input>`).attr(`type`, `text`)
+    const inputText = $(`<input>`)
+      .attr(`type`, `text`)
       .attr(`style`, `text-transform: uppercase`)
       .attr(`id`, `user-initials`)
       .attr(`name`, `user-initials`)
       .attr(`class`, `col-12 m-1 text-center`)
-      .attr(`maxlength`, `3`)
+      .attr(`maxlength`, `3`);
     const submitBtn = $(
       `<input class="m-1 btn btn-light btn-sm rounded-0" value="Submit">`
     );
-    $(questionText).append(inputText, submitBtn, $(`<hr>`))
+    $(questionText).append(inputText, submitBtn, $(`<hr>`));
     // button.textContent = `submit`
     // questionText.appendChild(button)
     userInput = document.querySelector(`#user-initials`);

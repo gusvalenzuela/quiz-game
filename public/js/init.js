@@ -61,6 +61,7 @@ var user = {
 };
 init();
 function init() {
+  t = timer - timeElapsed
   $(`.play-screen`).hide();
   $(`.selection-screen`).hide();
   $(loadingScreen).html(`<h1 style="color: white;">LOADING CATEGORIES...</h1>`);
