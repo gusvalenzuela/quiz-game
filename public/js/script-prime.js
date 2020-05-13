@@ -1,5 +1,5 @@
 let amtSelected = 10; //default
-quizOptionsForm.addEventListener(`submit`, (e) => {
+$(quizOptionsForm).on(`submit`, (e) => {
   e.preventDefault();
   const selCat = $(`#quiz-options-select`)[0];
   const selDiff = $(`#select-difficulty`)[0];
@@ -10,10 +10,10 @@ quizOptionsForm.addEventListener(`submit`, (e) => {
       selCat.value.trim() === `(Random Category)` &&
       selDiff.value.trim() !== `Choose...`
     ) {
-      let randomID = Math.ceil(Math.random() * questionCategories.length);
+      let randomID = Math.ceil(Math.random() * questionCategories.length) + 8;
       return pullTriviaQuestions(
         amtSelected,
-        randomID + 8,
+        randomID,
         selDiff.value.trim().toLowerCase()
       );
     } else if (
@@ -139,22 +139,20 @@ function generateBtns() {
 }
 function clearBtns() {
   // simple removal of answerBtns found (for fresh start)
-  for (i = 0; i < answerBtns.length; i++) {
-    $(answerBtns[i]).remove();
-  }
+  answerBtns.forEach((i) => $(i).remove());
 }
 function changeQuestion() {
   if (t < 1) {
     return endGame();
   }
-  answerGroup.addEventListener(`click`, gradeAnswer);
+  $(answerGroup).on(`click`, gradeAnswer);
   // endGame if no questions left, else choose and display new question/choices
   if (currentSet.length === 0) {
     // one last check and adding appropriate penalty to account for delay of endGame()
     if (userAnswer === q.answer) {
-      timePenalty--;
+      --timePenalty;
     } else {
-      timePenalty++;
+      ++timePenalty;
     }
     clearBtns();
     quizTimeDisplay.textContent = "";
@@ -306,12 +304,15 @@ function gradeAnswer(event) {
   }, 1500);
 }
 const endGame = (e) => {
+  
   clearInterval(interval);
   clearBtns();
+  const endScreenContainer = $(`.end-screen`)
   answerGroup.remove();
-  gradeDisplay.remove();
+  // gradeDisplay.remove();
   qCountDisplay.remove();
   centerDisplay.remove();
+  questionText.innerHTML = ``
 
   // in the event a penalty brings the total time to under 0, set score to 0
   if (t < 0) {
@@ -320,9 +321,12 @@ const endGame = (e) => {
     score = t;
   }
 
-  
-  console.log(t)
+  console.log(t);
+
   if (t > 0) {
+    endScreenContainer.show()
+    const submitInitialsRow = (`#submit-initials-row`)
+
     $(quizTimeDisplay)
       .attr(`style`, `font-color: white;`)
       .text(`Final Score: ${score}`);
