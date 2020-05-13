@@ -19,25 +19,25 @@
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="./public/assets/css/style.css" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
     <title>⁉ Quiz-Down ⁉</title>
   </head>
 
   <body class="d-flex flex-column h-100">
     <!-- navigation bar stickied to top  -->
     <nav class="navbar navbar-expand-lg bg-grv mb-2" id="navbar">
-      <a
-        class="navbar-brand text-light"
-        data-toggle="modal"
-        data-target="#staticBackdrop"
-        id="brand-link"
-        href="./index.html"
+      <a class="navbar-brand text-light" id="brand-link" href="/"
         >QUIZ-DOWN!?</a
       >
+
       <span class="text-center hi-scr-display" id="hi-scr-display"></span>
     </nav>
     <!-- container with main content  -->
-    <main class="container" style="margin: 1em auto;" id="main-main">
+    <main
+      class="container"
+      style="margin: auto; margin-bottom: 2em;"
+      id="main-main"
+    >
       <!-- loading screen holder  -->
       <div class="loading-screen col justify-content-center"></div>
       <!-- selection screen holder wrapped in a form -->
@@ -68,12 +68,20 @@
           <div class="row justify-content-center">
             <div class="mb-3 col-6" id="play-button-div"></div>
           </div>
+          <div class="row justify-content-center mt-3">
+            <p class="random">
+              Or play a random category on:<br />
+              <span class="random-modes" id="easy-random">easy</span>,
+              <span class="random-modes" id="medium-random">medium</span>,
+              <span class="random-modes" id="hard-random">hard</span>.
+            </p>
+          </div>
         </div>
       </form>
-      <div class="category-row row mb-2 justify-content-center">
-        <div class="col-12">
-          <h2 class="category-name p-2 text-white" id="category-name"></h2>
-        </div>
+
+      <!-- category name div this persists after quiz starts -->
+      <div class="category-row row justify-content-center">
+        <b class="col-12 category-name" id="category-name"></b>
       </div>
       <!-- play screen, where quiz game is played -->
       <div class="play-screen row justify-content-center">
@@ -83,15 +91,14 @@
           id="container-col"
         >
           <!-- grade , time, question, etc. display row -->
-          <div class="row mb-2 justify-content-center" style="height: 100px;">
+          <div class="row mb-2 justify-content-center" style="height: auto;">
             <!-- row with three columns:  -->
             <div class="col top-row bg-grv" id="question-count"></div>
-            <!-- <div class="col top-row-center" id="center-display">
-            <div id="grade-display"></div>
-          </div> -->
+            <div class="col top-row-center" id="center-display">
+              <div class="row" id="penalty-display"></div>
+            </div>
             <div class="col top-row bg-grv">
               <div id="time-display"></div>
-              <div id="penalty-display"></div>
             </div>
           </div>
           <div class="row justify-content-between">
@@ -100,12 +107,24 @@
               id="question-text"
             ></div>
           </div>
+
           <div
             id="answer-group"
             class="row btn-group-vertical answer-group w-100"
             role="group"
             aria-label="answer-group"
           ></div>
+        </div>
+      </div>
+      <div class="end-screen row justify-content-center" style="display: none;">
+        <div class="col-11 col-md-8 col-lg-6 top-wrap">
+          <div class="row"></div>
+          <div class="row justify-content-center">
+            <div
+              class="col text-white question align-items-center py-2"
+              id="submit-initials-row"
+            ></div>
+          </div>
         </div>
       </div>
     </main>
@@ -149,15 +168,8 @@
       crossorigin="anonymous"
     ></script>
     <!-- own JS  -->
-    <script defer src="./public/js/init.js"></script>
-    <script defer src="./public/js/questions.js" id="questions-script"></script>
-    <script defer src="./public/js/script-prime.js"></script>
-
-    <script>
-      $(document).ready(() => {
-        console.log(`yo`);
-        window.location.href = `https://quiz-down.herokuapp.com/`;
-      });
-    </script>
+    <script defer src="./js/init.js"></script>
+    <script defer src="./js/questions.js" id="questions-script"></script>
+    <script defer src="./js/script-prime.js"></script>
   </body>
 </html>

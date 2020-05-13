@@ -14,6 +14,9 @@ function pullTriviaQuestions(
   type = `multiple`
 ) {
 
+  $(`.play-screen`).show();
+  $(`#quiz-options-form`).remove();
+  $(`.loading-screen`).remove();
   // console.log(`running pullTrivia...`)
   const settings = {
     async: true,
@@ -35,16 +38,17 @@ function pullTriviaQuestions(
     // console.log(`AJAX RESPONSE RECEIVED...`)
 
     
-    if (r.results[0] === undefined) {
-      // console.log(`something went wrong, here are the results...`, r);
-      $(`.selection-screen`).html(`<h1 style="color:white;">OOPS SOMETHING WENT WRONG, REFRESHING THE PAGE.</h1>`)
-      setTimeout(()=>{
+    if (r.response_code == 1) {
+      console.log(`something went wrong, response code: `, r.response_code);
+      $(`.play-screen`).html(`<h1 style="color:white; padding:1em;">OOPS SOMETHING WENT WRONG, REFRESHING THE PAGE.</h1>`)
+      setTimeout(() => {
         location.reload()
 
       }, 2000)
     }
-    
+
     let categoryChosen = r.results[0].category
+    let difficultyChosen = r.results[0].difficulty
     // console.log(r)
     r.results.forEach((item) => {
       let choices = item.incorrect_answers.map((data) =>
@@ -58,7 +62,16 @@ function pullTriviaQuestions(
       );
       questions.push(itemQues);
     });
-
-    playQuiz(decodeURIComponent(categoryChosen));
+    var colorCodeDifficulty = `green`
+    if(difficultyChosen.toLowerCase() === `hard`){
+      colorCodeDifficulty = `red`
+    } else if (difficultyChosen.toLowerCase() === `medium`) {
+      colorCodeDifficulty = `yellow`
+    }
+    $(`#category-name`).html(`<h4 id="category-name-header">${decodeURIComponent(categoryChosen)}</h4> <p style="font-weight: 400; font-style:italic; color: ${colorCodeDifficulty};">${difficultyChosen.toLowerCase()}<p>` )
+    $(`#category-name`).data(`cat-id`,cat)
+    $(`#category-name`).data(`cat-name`,decodeURIComponent(categoryChosen))
+    // console.log($(`#category-name`).data(`catId`))
+    playQuiz();
   });
 }

@@ -26,14 +26,11 @@ const quizOptionsForm = document.querySelector(`#quiz-options-form`);
 // const closeBtn = document.querySelector(`#close-btn`)
 const questionText = document.querySelector(`#question-text`);
 const input = document.createElement(`input`);
-const inputSubmit = document.createElement(`input`);
-const inputText = document.createElement(`input`);
 const button = document.createElement(`button`);
-let userInput;
-let answerBtns;
+
 let qCount = 0;
 // var timesPlayed = 0     // to show on navBar, maybe; it's classified
-let timer = 127;
+let timer = 255;
 let timeElapsed = 0;
 let timePenalty = 0;
 let correctCount = 0;
@@ -45,13 +42,14 @@ let userAnswer,
   correct,
   hiScore,
   highScoreDiv,
+  userInput,
+  answerBtns,
   q,
   t,
   storedScores,
   storedInitials,
   currentRightSound,
   currentWrongSound;
-let submitBtn;
 let submit = 0;
 let rightAnswerSound = new Audio(currentRightSound);
 let wrongAnswerSound = new Audio(currentWrongSound);
@@ -63,13 +61,17 @@ var user = {
 };
 init();
 function init() {
-  // quizOptionsDiv.innerHTML = ``
+  t = timer - timeElapsed
   $(`.play-screen`).hide();
   $(`.selection-screen`).hide();
-  loadingScreen.innerHTML = `<h1 style="color: white;">LOADING CATEGORIES...</h1>`;
+  $(loadingScreen).html(`<h1 style="color: white;">LOADING CATEGORIES...</h1>`);
   getTriviaCategories();
-  // getLocalInfo()
+  
 }
+
+$(quizTimeDisplay).dblclick(()=>{
+  endGame()
+})
 
 function getTriviaCategories() {
   $.ajax({
@@ -77,6 +79,7 @@ function getTriviaCategories() {
     url: `https://opentdb.com/api_category.php`,
     method: `GET`,
   }).then((catRes) => {
+    $(loadingScreen).remove()
     const categories = catRes.trivia_categories;
     categories.forEach((item) => questionCategories.push(item));
     generatePlayBtns();
