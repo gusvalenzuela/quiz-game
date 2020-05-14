@@ -101,13 +101,14 @@ function clear() {
   $(quizTimeDisplay).html(`256`).attr(`value`, t);
 }
 function startTimer() {
+  console.log(`timer started`)
+  console.log(`time remaining: ` + t + ` - time elapsed: ` + timeElapsed + ` - penalty: ` + timePenalty)
   interval = setInterval(function () {
+    timeElapsed++;
     if (t > 1) {
-      ++timeElapsed;
       updateTimerandDisplay();
     } else {
       endGame();
-      // console.log(`time remaining: ` + t + ` - time elapsed: ` + timeElapsed + ` - penalty: ` + timePenalty)
     }
     // make the timer text red when 10 seconds or under
     if (t <= 10) {
@@ -115,6 +116,11 @@ function startTimer() {
     }
   }, 1000);
 }
+const updateTimerandDisplay = () => {
+  $(quizTimeDisplay).html(t).attr(`value`, t);
+  return (t = timer - timeElapsed - timePenalty); // set total time (t)
+  // display time until t = 0, then endGame
+};
 function generateBtns() {
   // adding conditional to make sure it doesn't regenerate buttons when there are no questions left
   if (currentSet.length > 0) {
@@ -142,10 +148,11 @@ function clearBtns() {
   answerBtns.forEach((i) => $(i).remove());
 }
 function changeQuestion() {
+  startTimer();
   if (t < 1) {
     return endGame();
   }
-  $(answerGroup).on(`click`, gradeAnswer);
+  
   // endGame if no questions left, else choose and display new question/choices
   if (currentSet.length === 0) {
     // one last check and adding appropriate penalty to account for delay of endGame()
@@ -191,6 +198,8 @@ function changeQuestion() {
 
     currentSet.splice([rand], 1); // splice the randomly chosen question from the working current set (to avoid choosing it again)
   }
+
+  $(answerGroup).on(`click`, gradeAnswer);
 }
 function playQuiz() {
   const qs = questions;
@@ -207,24 +216,20 @@ function playQuiz() {
   // console.log(currentSet )
   generateBtns();
   clear();
-  startTimer();
   changeQuestion();
 }
-const updateTimerandDisplay = () => {
-  t = timer - timeElapsed - timePenalty; // set total time (t)
-  // display time until t = 0, then endGame
-  $(quizTimeDisplay).html(t).attr(`value`, t);
-};
+
 function rightAnswer() {
   rightAnswerSound.play(); // playing sound effect
+  penDisplay.textContent = `+10 sec`;
   answerGroup.setAttribute(
     `class`,
     `row btn-group-vertical answer-group w-100 disable-click`
   ); // disable click with CSS class (gotta be a better way)
   answerGroup.setAttribute(`style`, `text-decoration: none; border:none;`);
-  timePenalty = timePenalty - 10; // add (2sec) for delay in gradeAnswer()
+  timePenalty -= 10; // add (2sec) for delay in gradeAnswer()
 
-  updateTimerandDisplay();
+  // updateTimerandDisplay();
   correctCount++;
   // gradeDisplay.setAttribute(
   //   `class`,
@@ -232,7 +237,6 @@ function rightAnswer() {
   // );
   // gradeDisplay.textContent = `Correct!`;
   penDisplay.setAttribute(`class`, `col text-success`);
-  penDisplay.textContent = `+10 sec`;
 
   // timeout interval to quickly clear the penalty notification
   setTimeout(function () {
@@ -246,8 +250,8 @@ function wrongAnswer() {
     `class`,
     `row btn-group-vertical answer-group w-100 disable-click`
   ); // disable click with CSS class (gotta be a better way)
-  timePenalty = timePenalty + 15; // add time (2sec) for delay in gradeAnswer()
-  updateTimerandDisplay();
+  timePenalty += 15; // add time (2sec) for delay in gradeAnswer()
+  // updateTimerandDisplay();
   incorrectCount++;
   // what if no penalty?
   // gradeDisplay.setAttribute(
@@ -265,14 +269,15 @@ function wrongAnswer() {
   }, 2000);
 }
 function gradeAnswer(event) {
-  event.preventDefault();
+  event.stopImmediatePropagation()
   var el = event.target;
   userAnswer = el.textContent;
+  clearInterval(interval);
 
   // just checking if button - in case i change CSS around it
   if (el.type === `button`) {
     // $(el).addClass(`disable-click`)
-    clearInterval(interval);
+    
     // checking to see if the selected button's text matches the question's answer
     if (userAnswer === q.answer) {
       el.setAttribute(`class`, `col-12 btn-grv bg-success`);
@@ -295,24 +300,22 @@ function gradeAnswer(event) {
   }
   // timeout of 1sec to display right/wrong answer to user (via button background color)
   setTimeout(function () {
-    startTimer();
     // after grading each answer we clear the buttons and generate new ones, to reset any formatting
     clearBtns();
     generateBtns();
     // go on to the next question
     changeQuestion();
-  }, 1500);
+  }, 2000);
 }
 const endGame = (e) => {
-  
   clearInterval(interval);
   clearBtns();
-  const endScreenContainer = $(`.end-screen`)
+  const endScreenContainer = $(`.end-screen`);
   answerGroup.remove();
   // gradeDisplay.remove();
   qCountDisplay.remove();
   centerDisplay.remove();
-  questionText.innerHTML = ``
+  questionText.innerHTML = ``;
 
   // in the event a penalty brings the total time to under 0, set score to 0
   if (t < 0) {
@@ -324,8 +327,8 @@ const endGame = (e) => {
   console.log(t);
 
   if (t > 0) {
-    endScreenContainer.show()
-    const submitInitialsRow = (`#submit-initials-row`)
+    endScreenContainer.show();
+    const submitInitialsRow = `#submit-initials-row`;
 
     $(quizTimeDisplay)
       .attr(`style`, `font-color: white;`)
