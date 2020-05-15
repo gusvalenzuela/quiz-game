@@ -115,7 +115,7 @@ function startTimer() {
   }, 1000);
 }
 const updateTimerandDisplay = () => {
-  t = timer - timeElapsed - timePenalty
+  t = timer - timeElapsed - timePenalty;
   $(quizTimeDisplay).html(t).attr(`value`, t);
   return t; // set total time (t)
   // display time until t = 0, then endGame
@@ -151,7 +151,7 @@ function changeQuestion() {
   if (t < 1) {
     return endGame();
   }
-  
+
   // endGame if no questions left, else choose and display new question/choices
   if (currentSet.length === 0) {
     // one last check and adding appropriate penalty to account for delay of endGame()
@@ -164,7 +164,7 @@ function changeQuestion() {
     quizTimeDisplay.textContent = "";
     questionText.textContent = "";
     answerGroup.remove();
-    gradeDisplay.remove();
+    // gradeDisplay.remove();
     qCountDisplay.remove();
     centerDisplay.remove();
 
@@ -228,7 +228,6 @@ function rightAnswer() {
   answerGroup.setAttribute(`style`, `text-decoration: none; border:none;`);
   timePenalty -= 10; // add (2sec) for delay in gradeAnswer()
 
-  
   correctCount++;
   // gradeDisplay.setAttribute(
   //   `class`,
@@ -252,7 +251,7 @@ function wrongAnswer() {
     `row btn-group-vertical answer-group w-100 disable-click`
   ); // disable click with CSS class (gotta be a better way)
   timePenalty += 15; // add time (2sec) for delay in gradeAnswer()
-  
+
   incorrectCount++;
   // what if no penalty?
   // gradeDisplay.setAttribute(
@@ -271,7 +270,7 @@ function wrongAnswer() {
   }, 2000);
 }
 function gradeAnswer(event) {
-  event.stopImmediatePropagation()
+  event.stopImmediatePropagation();
   var el = event.target;
   userAnswer = el.textContent;
   clearInterval(interval);
@@ -279,7 +278,7 @@ function gradeAnswer(event) {
   // just checking if button - in case i change CSS around it
   if (el.type === `button`) {
     // $(el).addClass(`disable-click`)
-    
+
     // checking to see if the selected button's text matches the question's answer
     if (userAnswer === q.answer) {
       el.setAttribute(`class`, `col-12 btn-grv bg-success`);
@@ -353,7 +352,6 @@ const endGame = (e) => {
 
     $(submitBtn).on(`click`, function (e) {
       e.stopPropagation();
-      console.log(inputText.val());
       if (inputText.val().trim() === "") {
         alert(`Please enter your initials (Max: 3 Characters)`);
       } else {
@@ -454,6 +452,7 @@ const enterScoreToDB = () => {
     score: score,
     category: $(`#category-name`).data(`catId`),
     category_name: $(`#category-name`).data(`catName`),
+    difficulty: $(`#category-name`).data(`catDifficulty`),
     dateEntered: Date.now(),
   };
 
@@ -468,7 +467,6 @@ const populateScores = () => {
   $(`#display-row`).remove();
 
   $.get(`/api/scores`, (results) => {
-    console.log(results);
 
     let scoreContainer = $(
       `<div class="row text-white text-center py-2" id="high-score-list">`

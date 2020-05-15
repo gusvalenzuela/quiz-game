@@ -46,19 +46,43 @@ app.get("/user", (req, res) => {
       res.json(err);
     });
 });
-
-app.post("/submit/", ({ body }, res) => {
-  console.log(body)
-  db.Score.create(body)
-    .then(({ _id }) =>
-      db.Quiz.create({category: body.category}, { $push: { scores: _id } })
-    )
-    .then((dbScores) => {
-      res.json(dbScores);
+app.get("/api/quizzes", (req, res) => {
+  db.Quiz.find({})
+    .populate("scores")
+    .then((dbUser) => {
+      res.json(dbUser);
     })
     .catch((err) => {
       res.json(err);
     });
+});
+
+app.post("/submit/", ({ body }, res) => {
+  var quizType = `${body.category_name.slice(0, 7).toLowerCase()}-${
+    body.category
+  }-${body.difficulty}`;
+
+  db.Score.create(body, (scores) => {
+    console.log(scores)
+    db.Quiz.updateOne(
+      // Syntax: { $and: [ { <expression1> }, { <expression2> } , ... , { <expressionN> } ] }
+      { name: quizType },
+      {
+        category: body.category,
+        difficulty: body.difficulty,
+        category_name: body.category_name,
+        $push: { scores: scores._id },
+      },
+      { upsert: true }
+    )
+      .then((dbScores) => {
+        console.log(`\r\nLINE 86: DBSCORES\r\n`, dbScores);
+        res.json(dbScores);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  });
 });
 
 // Start the server

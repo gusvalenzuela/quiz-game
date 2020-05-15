@@ -71,6 +71,7 @@ function pullTriviaQuestions(
     $(`#category-name`).html(`<h4 id="category-name-header">${decodeURIComponent(categoryChosen)}</h4> <p style="font-weight: 400; font-style:italic; color: ${colorCodeDifficulty};">${difficultyChosen.toLowerCase()}<p>` )
     $(`#category-name`).data(`cat-id`,cat)
     $(`#category-name`).data(`cat-name`,decodeURIComponent(categoryChosen))
+    $(`#category-name`).data(`cat-difficulty`,difficultyChosen)
     // console.log($(`#category-name`).data(`catId`))
     playQuiz();
   });
