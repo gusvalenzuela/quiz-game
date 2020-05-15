@@ -101,8 +101,6 @@ function clear() {
   $(quizTimeDisplay).html(`256`).attr(`value`, t);
 }
 function startTimer() {
-  console.log(`timer started`)
-  console.log(`time remaining: ` + t + ` - time elapsed: ` + timeElapsed + ` - penalty: ` + timePenalty)
   interval = setInterval(function () {
     timeElapsed++;
     if (t > 1) {
@@ -117,8 +115,9 @@ function startTimer() {
   }, 1000);
 }
 const updateTimerandDisplay = () => {
+  t = timer - timeElapsed - timePenalty
   $(quizTimeDisplay).html(t).attr(`value`, t);
-  return (t = timer - timeElapsed - timePenalty); // set total time (t)
+  return t; // set total time (t)
   // display time until t = 0, then endGame
 };
 function generateBtns() {
@@ -229,17 +228,19 @@ function rightAnswer() {
   answerGroup.setAttribute(`style`, `text-decoration: none; border:none;`);
   timePenalty -= 10; // add (2sec) for delay in gradeAnswer()
 
-  // updateTimerandDisplay();
+  
   correctCount++;
   // gradeDisplay.setAttribute(
   //   `class`,
   //   `col text-success text-center font-weight-bold`
   // );
   // gradeDisplay.textContent = `Correct!`;
+
   penDisplay.setAttribute(`class`, `col text-success`);
 
-  // timeout interval to quickly clear the penalty notification
+  // timeout interval to quickly show graded answer
   setTimeout(function () {
+    updateTimerandDisplay();
     penDisplay.textContent = ``;
     // gradeDisplay.textContent = ``;
   }, 2000);
@@ -251,7 +252,7 @@ function wrongAnswer() {
     `row btn-group-vertical answer-group w-100 disable-click`
   ); // disable click with CSS class (gotta be a better way)
   timePenalty += 15; // add time (2sec) for delay in gradeAnswer()
-  // updateTimerandDisplay();
+  
   incorrectCount++;
   // what if no penalty?
   // gradeDisplay.setAttribute(
@@ -264,6 +265,7 @@ function wrongAnswer() {
 
   // timeout interval to quickly clear the penalty notification
   setTimeout(function () {
+    updateTimerandDisplay();
     penDisplay.textContent = ``;
     // gradeDisplay.textContent = ``;
   }, 2000);
@@ -351,8 +353,8 @@ const endGame = (e) => {
 
     $(submitBtn).on(`click`, function (e) {
       e.stopPropagation();
-      console.log(inputText.value);
-      if (inputText.value.trim() === "") {
+      console.log(inputText.val());
+      if (inputText.val().trim() === "") {
         alert(`Please enter your initials (Max: 3 Characters)`);
       } else {
         enterScoreToDB();

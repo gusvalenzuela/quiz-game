@@ -30,7 +30,7 @@ const button = document.createElement(`button`);
 
 let qCount = 0;
 // var timesPlayed = 0     // to show on navBar, maybe; it's classified
-let timer = 255;
+let timer = 256;
 let timeElapsed = 0;
 let timePenalty = 0;
 let correctCount = 0;
