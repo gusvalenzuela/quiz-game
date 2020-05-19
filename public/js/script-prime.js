@@ -1,3 +1,162 @@
+const questions = [];
+const questionCategories = [];
+const scriptTag = document.querySelector(`#questions-script`);
+const navScoreDisplay = document.querySelector(`#hi-scr-display`);
+const mainContainer = document.querySelector(`#container-col`);
+const quizTimeDisplay = document.querySelector(`#time-display`);
+const brandLink = document.querySelector(`#brand-link`);
+const highScoreLink = document.querySelector(`#high-scores`);
+const answerGroup = document.querySelector(`#answer-group`);
+const gradeDisplay = document.querySelector(`#grade-display`);
+const centerDisplay = document.querySelector(`#center-display`);
+const penDisplay = document.querySelector(`#penalty-display`);
+const playBtnCat = document.querySelector(`#play-button-cat`);
+const playBtnDog = document.querySelector(`#play-button-dog`);
+const playBtnSalmon = document.querySelector(`#play-button-salmon`);
+const navBar = document.querySelector(`#navbar`);
+const categoryName = document.querySelector(`#category-name`);
+const qCountDisplay = document.querySelector(`#question-count`);
+const quizOptionsDiv = document.querySelector(`#quiz-options-div`);
+const loadingScreen = document.querySelector(`.loading-screen`);
+const quizCategoryDiv = document.querySelector(`#quiz-category-div`);
+const quizDifficultyDiv = document.querySelector(`#quiz-difficulty-div`);
+const playButtonDiv = document.querySelector(`#play-button-div`);
+const quizOptionsForm = document.querySelector(`#quiz-options-form`);
+// const closeBtn = document.querySelector(`#close-btn`)
+const questionText = document.querySelector(`#question-text`);
+const input = document.createElement(`input`);
+const button = document.createElement(`button`);
+
+let qCount = 0;
+// var timesPlayed = 0     // to show on navBar, maybe; it's classified
+let timer = 256;
+let timeElapsed = 0;
+let timePenalty = 0;
+let correctCount = 0;
+let incorrectCount = 0;
+let score = timer;
+let currentSet = [];
+let interval;
+let userAnswer,
+  correct,
+  hiScore,
+  highScoreDiv,
+  userInput,
+  answerBtns,
+  q,
+  t,
+  storedInitials,
+  currentRightSound,
+  currentWrongSound;
+let submit = 0;
+let rightAnswerSound = new Audio(currentRightSound);
+let wrongAnswerSound = new Audio(currentWrongSound);
+
+init();
+
+function init() {
+  t = timer - timeElapsed;
+  $(`.play-screen`).hide();
+  $(`.selection-screen`).hide();
+  $(loadingScreen).html(`<h1 style="color: white;">LOADING CATEGORIES...</h1>`);
+  getTriviaCategories();
+}
+
+function getTriviaCategories() {
+  $.ajax({
+    async: true,
+    url: `https://opentdb.com/api_category.php`,
+    method: `GET`,
+  }).then((catRes) => {
+    $(loadingScreen).remove();
+    const categories = catRes.trivia_categories;
+    categories.forEach((item) => questionCategories.push(item));
+    generatePlayBtns();
+  });
+}
+
+class QuestionsFull {
+  constructor(title, answer, choices) {
+    this.title = title;
+    this.answer = answer;
+    this.choices = choices;
+  }
+}
+
+// pullTriviaQuestions()
+function pullTriviaQuestions(
+  amt = 10,
+  cat = 9,
+  diff = `easy`,
+  type = `multiple`
+) {
+  $(`.play-screen`).show();
+  $(`#quiz-options-form`).remove();
+  $(`.loading-screen`).remove();
+  // console.log(`running pullTrivia...`)
+  const settings = {
+    async: true,
+    crossDomain: true,
+    url:
+      `https://opentdb.com/api.php?amount=` +
+      amt +
+      `&category=` +
+      parseInt(cat) +
+      `&difficulty=` +
+      diff +
+      `&type=` +
+      type +
+      `&encode=url3986`,
+    method: `GET`,
+  };
+
+  $.ajax(settings).then((r) => {
+    // console.log(`AJAX RESPONSE RECEIVED...`)
+
+    if (r.response_code == 1) {
+      console.log(`something went wrong, response code: `, r.response_code);
+      $(`.play-screen`).html(
+        `<h1 style="color:white; padding:1em;">OOPS SOMETHING WENT WRONG, REFRESHING THE PAGE.</h1>`
+      );
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
+    }
+
+    let categoryChosen = r.results[0].category;
+    let difficultyChosen = r.results[0].difficulty;
+    // console.log(r)
+    r.results.forEach((item) => {
+      let choices = item.incorrect_answers.map((data) =>
+        decodeURIComponent(data)
+      );
+      choices.push(decodeURIComponent(item.correct_answer));
+      let itemQues = new QuestionsFull(
+        decodeURIComponent(item.question),
+        decodeURIComponent(item.correct_answer),
+        choices
+      );
+      questions.push(itemQues);
+    });
+    var colorCodeDifficulty = `green`;
+    if (difficultyChosen.toLowerCase() === `hard`) {
+      colorCodeDifficulty = `red`;
+    } else if (difficultyChosen.toLowerCase() === `medium`) {
+      colorCodeDifficulty = `yellow`;
+    }
+    $(`#category-name`).html(
+      `<h4 id="category-name-header">${decodeURIComponent(
+        categoryChosen
+      )}</h4> <p style="font-weight: 400; font-style:italic; color: ${colorCodeDifficulty};">${difficultyChosen.toLowerCase()}<p>`
+    );
+    $(`#category-name`).data(`cat-id`, cat);
+    $(`#category-name`).data(`cat-name`, decodeURIComponent(categoryChosen));
+    $(`#category-name`).data(`cat-difficulty`, difficultyChosen);
+    // console.log($(`#category-name`).data(`catId`))
+    playQuiz();
+  });
+}
+
 let amtSelected = 10; //default
 $(quizOptionsForm).on(`submit`, (e) => {
   e.preventDefault();
@@ -165,7 +324,7 @@ function changeQuestion() {
     questionText.textContent = "";
     answerGroup.remove();
     // gradeDisplay.remove();
-    qCountDisplay.remove();
+    $(`.left-row`).remove();
     centerDisplay.remove();
 
     // delay to allow for _____
@@ -174,7 +333,7 @@ function changeQuestion() {
     }, 500);
   } else {
     qCount++; // keep count of questions asked and display
-    qCountDisplay.innerHTML = `${qCount}/${amtSelected}`;
+    qCountDisplay.textContent = `${qCount}/${amtSelected}`;
 
     var rand = Math.floor(Math.random() * questions.length); // generate random number 0 - questions length ¯\_(ツ)_/¯
     q = currentSet[rand]; // store random selected question in variable q
@@ -203,8 +362,6 @@ function changeQuestion() {
 function playQuiz() {
   const qs = questions;
 
-  // getLocalInfo();
-
   // randomizing the order of questions shown each time the quiz is loaded
   for (i = qs.length; i > 0; i--) {
     var r = Math.floor(Math.random() * qs.length); // generate random number 0-length of Questions Object
@@ -212,10 +369,16 @@ function playQuiz() {
     qs.splice([r], 1); // removing question from working set (until there are none left to grab)
   }
   console.log(`Let's play!`);
-  // console.log(currentSet )
   generateBtns();
   clear();
   changeQuestion();
+
+  // shortcut to end screen, because
+  // bug: when shortcut used, the storedScores are stored as string (want integer)
+  $(quizTimeDisplay).dblclick(() => {
+    console.log(`click clock`);
+    endGame();
+  });
 }
 
 function rightAnswer() {
@@ -311,10 +474,9 @@ function gradeAnswer(event) {
 const endGame = (e) => {
   clearInterval(interval);
   clearBtns();
-  const endScreenContainer = $(`.end-screen`);
   answerGroup.remove();
   // gradeDisplay.remove();
-  qCountDisplay.remove();
+  $(`#question-count-parent`).remove();
   centerDisplay.remove();
   questionText.innerHTML = ``;
 
@@ -325,16 +487,19 @@ const endGame = (e) => {
     score = t;
   }
 
-  console.log(t);
+  console.log(`Time left @ end of game: ${t}`);
 
   if (t > 0) {
-    endScreenContainer.show();
-    const submitInitialsRow = `#submit-initials-row`;
+    $(`.end-screen`).show();
+    // const submitInitialsRow = `#submit-initials-row`;
 
     $(quizTimeDisplay)
       .attr(`style`, `font-color: white;`)
-      .text(`Final Score: ${score}`);
-    $(questionText).text(`Enter your initials:`);
+      .html(`Final Score: ${score}`);
+    const form = $(`<form id="initials-form">`);
+    const inputLabel = $(`<label for="#user-initials">`).text(
+      `Enter your initials:`
+    );
     const inputText = $(`<input>`)
       .attr(`type`, `text`)
       .attr(`style`, `text-transform: uppercase`)
@@ -343,20 +508,19 @@ const endGame = (e) => {
       .attr(`class`, `col-12 m-1 text-center`)
       .attr(`maxlength`, `3`);
     const submitBtn = $(
-      `<input class="m-1 btn btn-light btn-sm rounded-0" value="Submit">`
+      `<input class="m-1 btn btn-light btn-sm rounded-0" value="Submit" type="submit" role="submit">`
     );
-    $(questionText).append(inputText, submitBtn, $(`<hr>`));
-    // button.textContent = `submit`
-    // questionText.appendChild(button)
+    form.append(inputLabel, inputText, submitBtn);
+    $(questionText).append(form, $(`<hr>`));
     userInput = document.querySelector(`#user-initials`);
 
-    $(submitBtn).on(`click`, function (e) {
-      e.stopPropagation();
+    $(`#initials-form`).on(`submit`, function (e) {
+      e.preventDefault();
       if (inputText.val().trim() === "") {
         alert(`Please enter your initials (Max: 3 Characters)`);
       } else {
         enterScoreToDB();
-        // submitInitials();
+        // thankForSubmission();
       }
     });
   } else {
@@ -381,8 +545,6 @@ const hiScoreList = () => {
   h4.textContent = this.name.toUpperCase() + ` HIGH SCORES`;
   highScoreDiv.appendChild(h4);
 
-  var arrayofIndices = [];
-
   var descScoreList = storedScores;
   descScoreList = descScoreList.sort(function (a, b) {
     // var index = descScoreList.indexOf(a)
@@ -402,7 +564,6 @@ const hiScoreList = () => {
     icon.setAttribute(`title`, `close-icon`);
 
     var descScoreListPrint;
-    var descInitialsPrint;
 
     if (descScoreList[i] < 10) {
       descScoreListPrint = `00` + descScoreList[i];
@@ -445,10 +606,8 @@ const hiScoreList = () => {
 };
 
 const enterScoreToDB = () => {
-  const initials = userInput.value.trim().toUpperCase();
-
-  const newScore = {
-    initials: initials,
+  let newScore = {
+    initials: userInput.value.trim().toUpperCase(),
     score: score,
     category: $(`#category-name`).data(`catId`),
     category_name: $(`#category-name`).data(`catName`),
@@ -456,22 +615,21 @@ const enterScoreToDB = () => {
     dateEntered: Date.now(),
   };
 
-  $.post(`/submit`, newScore, () => {
+  $.post(`/submit`, newScore, (results) => {
+    console.log(results);
     populateScores();
   });
 };
 
 const populateScores = () => {
-  let elementToRemove = $(`#question-text`)[0].parentElement;
-  $(elementToRemove).remove();
+  $(`#question-text-parent`).remove();
   $(`#display-row`).remove();
 
-  $.get(`/api/scores`, (results) => {
-
+  $.get(`/api/scores`, (storedScores) => {
     let scoreContainer = $(
       `<div class="row text-white text-center py-2" id="high-score-list">`
     );
-
+      console.log(storedScores)
     $(mainContainer).append(scoreContainer);
     highScoreDiv = document.querySelector(`#high-score-list`);
 
@@ -481,7 +639,7 @@ const populateScores = () => {
     // h4.textContent = this.name.toUpperCase() + ` HIGH SCORES`;
     // highScoreDiv.appendChild(h4);
 
-    for (i = 0; i < results.length; i++) {
+    for (i = 0; i < storedScores.length; i++) {
       var p = document.createElement(`p`);
       var icon = document.createElement(`i`);
       p.setAttribute(`class`, `text-center m-0 col-12`);
@@ -491,24 +649,24 @@ const populateScores = () => {
       icon.setAttribute(`id`, `close-icon-` + i);
       icon.setAttribute(`title`, `close-icon`);
 
-      var resultsPrint;
+      var storedScoresPrint;
       var descInitialsPrint;
 
-      if (results[i] < 10) {
-        resultsPrint = `00` + results[i];
-      } else if (results[i] < 100) {
-        resultsPrint = `0` + results[i];
+      if (storedScores[i] < 10) {
+        storedScoresPrint = `00` + storedScores[i];
+      } else if (storedScores[i] < 100) {
+        storedScoresPrint = `0` + storedScores[i];
       }
 
       // score = parseInt(`0`+score)
-      p.textContent = results[i].initials + ` ` + results[i].score; // sorting in high score but doesnt sort initials with it
+      p.textContent = storedScores[i].initials + ` ` + storedScores[i].score; // sorting in high score but doesnt sort initials with it
       scoreContainer.append(p);
       p.prepend(icon);
     }
   });
 };
 
-const submitInitials = () => {
+const thankForSubmission = () => {
   user.initials = userInput.value.toUpperCase();
   var uInit = userInput.value.toUpperCase();
   questionText.remove();
@@ -538,42 +696,4 @@ const submitInitials = () => {
   p.textContent = uInit + ` ` + scorePrint;
   $(highScoreDiv).append(p);
   p.prepend(icon);
-
-  localStorage.setItem(`last-user-initials`, uInit);
-
-  // this.storedInitials.push(userInput.value.toUpperCase())
-  storedInitials.push(uInit);
-  console.log(uInit);
-  localStorage.setItem(
-    this.name + `-stored-initials`,
-    JSON.stringify(storedInitials)
-  ); // store initials in local storage array
-  storedScores.push(parseInt(scorePrint)); // push score into working array storedScores
-  localStorage.setItem(
-    this.name + `-stored-scores`,
-    JSON.stringify(storedScores)
-  ); // store score in local storage array
-  // console.log(`Your storedScores is: ` + storedScores)
 };
-
-function enterInitials(e) {
-  // e.preventDefault()
-  var keycode = e.keyCode;
-
-  // if keyup event is "enter" (keycode 13) then save input as initial and score in local storage (a.k.a submitInitials())
-  if (keycode === 13) {
-    // console.log(`keycode is: `+ keycode)
-    submitInitials();
-  }
-}
-
-// inputText.addEventListener(`keyup`, enterInitials);
-
-brandLink.addEventListener(`click`, function (e) {
-  e.preventDefault();
-  window.location.reload(true);
-});
-
-// shortcut to end screen, because
-// bug: when shortcut used, the storedScores are stored as string (want integer)
-navScoreDisplay.addEventListener(`click`, endGame);
