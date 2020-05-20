@@ -2,18 +2,23 @@ const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const path = require("path");
-
+const db = require("./models");
+const app = express();
+const exphbs = require("express-handlebars");
 const PORT = process.env.PORT || 3700;
 
-const db = require("./models");
-
-const app = express();
+app.engine(
+  "handlebars",
+  exphbs({
+    defaultLayout: "main",
+  })
+);
+app.set("view engine", "handlebars");
+app.set("views", __dirname + "/views");
 
 app.use(logger("dev"));
-
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
 app.use(express.static("public"));
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/quizdowndb", {
@@ -23,11 +28,23 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/quizdowndb", {
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/public/index-node.html"));
 });
-app.get("/test", (req, res) => {
+app.get("/test", ({ params }, res) => {
   res.sendFile(path.join(__dirname + "/public/index-test.html"));
 });
 
-app.get("/api/scores/", ({ params }, res) => {
+app.get("/hiscores/:difficulty/:category", ({ params }, res) => {
+  db.Score.where(`category`, Number(params.category))
+    .where(`difficulty`, params.difficulty)
+    .sort({ score: -1 })
+    .then((dbScores) => {
+      res.render(`hiscores`, { scores: [dbScores] });
+    })
+    .catch((err) => {
+      res.json(err);
+    });
+});
+
+app.get("/api/allscores/", ({ params }, res) => {
   // const difficulty = params.difficulty
   db.Score.find({})
     .sort({ score: -1 })
@@ -38,9 +55,11 @@ app.get("/api/scores/", ({ params }, res) => {
       res.json(err);
     });
 });
-app.get("/api/scores/:difficulty", ({ params }, res) => {
-  const chosenDifficulty = params.difficulty;
-  db.Score.find({ difficulty: chosenDifficulty }, { score: -1 })
+
+app.get("/api/hiscores/:difficulty/:category", ({ params }, res) => {
+  db.Score.where(`category`, Number(params.category))
+    .where(`difficulty`, params.difficulty)
+    .sort({ score: -1 })
     .then((dbScores) => {
       res.json(dbScores);
     })
@@ -57,6 +76,15 @@ app.get("/user", (req, res) => {
     .catch((err) => {
       res.json(err);
     });
+});
+
+app.delete("/api/deletescore/:id", ({ params }, res) => {
+  console.log(`\r\n\n\n\n\n\ngoing to delete this record: ${params.id}`);
+  db.Score.deleteOne({ _id: mongoose.Types.ObjectId(params.id) }).then(
+    (result) => {
+      res.json(result);
+    }
+  );
 });
 app.get("/api/quizzes", (req, res) => {
   db.Quiz.find({})

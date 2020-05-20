@@ -262,7 +262,7 @@ function clear() {
 function startTimer() {
   interval = setInterval(function () {
     timeElapsed++;
-    if (t > 1) {
+    if (t > 0) {
       updateTimerandDisplay();
     } else {
       endGame();
@@ -376,7 +376,6 @@ function playQuiz() {
   // shortcut to end screen, because
   // bug: when shortcut used, the storedScores are stored as string (want integer)
   $(quizTimeDisplay).dblclick(() => {
-    console.log(`click clock`);
     endGame();
   });
 }
@@ -477,6 +476,7 @@ const endGame = (e) => {
   answerGroup.remove();
   // gradeDisplay.remove();
   $(`#question-count-parent`).remove();
+
   centerDisplay.remove();
   questionText.innerHTML = ``;
 
@@ -490,7 +490,6 @@ const endGame = (e) => {
   console.log(`Time left @ end of game: ${t}`);
 
   if (t > 0) {
-    $(`.end-screen`).show();
     // const submitInitialsRow = `#submit-initials-row`;
 
     $(quizTimeDisplay)
@@ -500,7 +499,7 @@ const endGame = (e) => {
     const inputLabel = $(`<label for="#user-initials">`).text(
       `Enter your initials:`
     );
-    const inputText = $(`<input>`)
+    const inputText = $(`<input autocomplete="false">`)
       .attr(`type`, `text`)
       .attr(`style`, `text-transform: uppercase`)
       .attr(`id`, `user-initials`)
@@ -515,6 +514,7 @@ const endGame = (e) => {
     userInput = document.querySelector(`#user-initials`);
 
     $(`#initials-form`).on(`submit`, function (e) {
+      $(`#time-display-parent`).removeClass(`bg-grv`);
       e.preventDefault();
       if (inputText.val().trim() === "") {
         alert(`Please enter your initials (Max: 3 Characters)`);
@@ -532,79 +532,6 @@ const endGame = (e) => {
   // console.log(this)
   // hiScoreList();
 };
-const hiScoreList = () => {
-  var div = document.createElement(`div`);
-  div.setAttribute(`class`, ``);
-  div.setAttribute(`id`, `high-score-list`);
-  div.setAttribute(`class`, `row text-white text-center py-2`);
-  $(mainContainer).appendChild(div);
-  highScoreDiv = document.querySelector(`#high-score-list`);
-  // making h4 tag with the score list header
-  var h4 = document.createElement(`h4`);
-  h4.setAttribute(`class`, `text-center col-12`);
-  h4.textContent = this.name.toUpperCase() + ` HIGH SCORES`;
-  highScoreDiv.appendChild(h4);
-
-  var descScoreList = storedScores;
-  descScoreList = descScoreList.sort(function (a, b) {
-    // var index = descScoreList.indexOf(a)
-    // console.log(index)
-    return b - a;
-  });
-  // var descInitialsList =
-
-  for (i = 0; i < descScoreList.length; i++) {
-    var p = document.createElement(`p`);
-    var icon = document.createElement(`i`);
-    p.setAttribute(`class`, `text-center m-0 col-12`);
-    p.setAttribute(`id`, `score-` + i); // tie ID to index
-    icon.setAttribute(`class`, `fa fa-close mx-2`);
-    icon.setAttribute(`style`, `font-size:14px`);
-    icon.setAttribute(`id`, `close-icon-` + i);
-    icon.setAttribute(`title`, `close-icon`);
-
-    var descScoreListPrint;
-
-    if (descScoreList[i] < 10) {
-      descScoreListPrint = `00` + descScoreList[i];
-    } else if (descScoreList[i] < 100) {
-      descScoreListPrint = `0` + descScoreList[i];
-    }
-
-    // score = parseInt(`0`+score)
-    p.textContent = storedInitials[i] + ` ` + descScoreListPrint; // sorting in high score but doesnt sort initials with it
-    highScoreDiv.appendChild(p);
-    p.prepend(icon);
-  }
-
-  highScoreDiv.addEventListener(`click`, function (event) {
-    // event.stopPropagation()
-    var el = event.target;
-    var lastCharScoreID;
-    var lastCharCloseID;
-    // console.log(`element id is: ` + el.id)
-    // console.log(el.parentElement.textContent)
-
-    if (el.title === `close-icon`) {
-      var lenghtofScoreID;
-      var lengthofCloseID = el.id.length;
-      lastCharCloseID = el.id[lengthofCloseID - 1];
-      // el.remove()
-      var parentID = `#score-` + lastCharCloseID;
-      var parentElement = document.querySelector(parentID);
-      console.log(parentElement);
-      // confirm(`are you sure you want to remove this record?\ncannot be undone.`)
-      // parentElement.remove()
-      // find way to delete that particular record,
-      // alert(`Just kidding, i haven't coded it that far\nthat record will return when you refresh the game`)
-
-      // console.log(`the selected score paragrap tag is: `+grabParent)
-      console.log(`last character is: ` + lastCharCloseID);
-      console.log(`length of ID ` + lengthofCloseID);
-    }
-  });
-};
-
 const enterScoreToDB = () => {
   let newScore = {
     initials: userInput.value.trim().toUpperCase(),
@@ -616,54 +543,73 @@ const enterScoreToDB = () => {
   };
 
   $.post(`/submit`, newScore, (results) => {
-    console.log(results);
-    populateScores();
+    // console.log(`scores upserted:`, results.upserted);
+    populateScores(newScore);
   });
 };
 
-const populateScores = () => {
+const populateScores = (newscore) => {
   $(`#question-text-parent`).remove();
-  $(`#display-row`).remove();
+  $(`#count-penalty-time-display-row`).remove();
 
-  $.get(`/api/scores`, (storedScores) => {
-    let scoreContainer = $(
-      `<div class="row text-white text-center py-2" id="high-score-list">`
-    );
-      console.log(storedScores)
-    $(mainContainer).append(scoreContainer);
-    highScoreDiv = document.querySelector(`#high-score-list`);
+  $.get(
+    `/api/hiscores/${newscore.difficulty}/${newscore.category}`,
+    (storedScores) => {
+      let scoreContainer = $(
+        `<ul class="row text-white text-center py-2" id="high-score-list" data-difficulty="${newscore.difficulty}" data-category="${newscore.category}">`
+      );
+      console.log(storedScores);
+      $(mainContainer).append(scoreContainer);
+      highScoreDiv = document.querySelector(`#high-score-list`);
 
-    // // making h4 tag with the score list header
-    // var h4 = document.createElement(`h4`);
-    // h4.setAttribute(`class`, `text-center col-12`);
-    // h4.textContent = this.name.toUpperCase() + ` HIGH SCORES`;
-    // highScoreDiv.appendChild(h4);
+      // making h4 tag with the score list header
+      var h4 = document.createElement(`h4`);
+      h4.setAttribute(`class`, `text-center col-12`);
+      h4.textContent = `HIGH SCORES`;
+      highScoreDiv.appendChild(h4);
 
-    for (i = 0; i < storedScores.length; i++) {
-      var p = document.createElement(`p`);
-      var icon = document.createElement(`i`);
-      p.setAttribute(`class`, `text-center m-0 col-12`);
-      p.setAttribute(`id`, `score-` + i); // tie ID to index
-      icon.setAttribute(`class`, `fa fa-close mx-2`);
-      icon.setAttribute(`style`, `font-size:14px`);
-      icon.setAttribute(`id`, `close-icon-` + i);
-      icon.setAttribute(`title`, `close-icon`);
+      storedScores.forEach((score) => {
+        var li = document.createElement(`li`);
+        var icon = document.createElement(`span`);
+        var span = document.createElement(`span`);
+        li.setAttribute(`class`, `text-center m-0 col-12`);
+        li.setAttribute(`data-score-id`, score._id); // tie ID to index
+        icon.setAttribute(`class`, `fa fa-close mx-2`);
+        icon.setAttribute(`style`, `font-size:14px`);
+        icon.setAttribute(`data-score-id`, score._id);
+        icon.setAttribute(`title`, `close-icon`);
 
-      var storedScoresPrint;
-      var descInitialsPrint;
+        // score = parseInt(`0`+score)
+        li.append(span, icon);
+        span.textContent = score.initials + ` ` + score.score;
+        scoreContainer.append(li);
+      });
 
-      if (storedScores[i] < 10) {
-        storedScoresPrint = `00` + storedScores[i];
-      } else if (storedScores[i] < 100) {
-        storedScoresPrint = `0` + storedScores[i];
-      }
+      highScoreDiv.addEventListener(`click`, function (event) {
+        // event.stopPropagation()
+        var el = event.target;
 
-      // score = parseInt(`0`+score)
-      p.textContent = storedScores[i].initials + ` ` + storedScores[i].score; // sorting in high score but doesnt sort initials with it
-      scoreContainer.append(p);
-      p.prepend(icon);
+        if (el.title === `close-icon`) {
+          confirm(
+            `are you sure you want to remove this record?\ncannot be undone.`
+          );
+
+          if (!confirm) {
+            return;
+          } else {
+            $.ajax({
+              url: "/api/deletescore/" + $(el).data(`scoreId`),
+              type: "DELETE",
+              success: function (result) {
+                console.log(`deleted ${result.deletedCount} records`);
+                window.location.href = '/'
+              },
+            });
+          }
+        }
+      });
     }
-  });
+  );
 };
 
 const thankForSubmission = () => {
