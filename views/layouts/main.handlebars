@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>QuizDown</title>
+
+	{{!-- css  --}}
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="/_css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+	<link href="/_css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+	{{!-- favicon  --}}
+	<link rel="icon" href="/src/images/favicon.ico" type="image/x-icon">
+	<script src="https://code.jquery.com/jquery-3.5.0.min.js"
+		integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+	<script defer src="/_js/materialize.js"></script>
+	<script defer src="/_js/init.js"></script>
+	<script defer src="/_js/lazysizes.min.js" async=""></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+</head>
+
+<body>
+
+	{{!-- navbar goes hereeeeeeeeeeeeee --}}
+	<nav class="navbar navbar-expand-lg bg-grv mb-2" id="navbar">
+      <a class="navbar-brand text-light" id="brand-link" href="/"
+        >QUIZ-DOWN!?</a
+      >
+
+      <span class="text-center hi-scr-display" id="hi-scr-display"></span>
+    </nav>
+	<ul class="sidenav" id="mobile-collapsible">
+		<div class="green darken-4" style="height: 15%;" id="sidenav-logo-div">
+		</div>
+		<div>
+			<li><a href="/homepage" id="sidenav-homepage-link">Homepage</a></li>
+			<li><a href="/profile" id="sidenav-profile-link" style="display: none;">Profile</a></li>
+			<li><a href="/settings" id="sidenav-settings-link" style="display: none;">Settings</a></li>
+			<li><i class="divider"></i></li>
+			<li><a href="/signin" id="sidenav-login-link">Login</a></li>
+			<li><a href="/logout" id="sidenav-logout-link" style="display: none;">Logout</a></li>
+			<li><a href="/signup" id="sidenav-signup-link">Sign Up!</a></li>
+		</div>
+	</ul>
+	{{!-- navbar ends hereeeeeeeeeeeeee --}}
+
+	{{!-- where the handlebars layout is coming in  --}}
+	<main>
+		{{{ body }}}
+	</main>
+	<footer class="page-footer">
+		{{!-- <div class="container" style="margin: 0 0"> --}}
+		<div class="row" style="width: 100%; margin-bottom: 3px;">
+			<div class="col l6 m4 l6 left-align">
+				<p style="margin: 0;" class="black-text">Contributors:</p>
+				<ul>
+					{{!-- <li><a href="https://github.com/markohanesian">Mark Ohanesian </a></li>
+					<li><a href="https://github.com/SquidDOTjpeg">Anthony Pillow </a></li> --}}
+					<li><a href="https://github.com/gusvalenzuela">gus Valenzuela</a></li>
+				</ul>
+			</div>
+			<div class="col l4 offset-l2 m4 l3">
+
+			</div>
+			<div class="col l4 offset-l2 m4 l3 right-align" style="float: right;">
+				<ul>
+					<li>
+						<a href="https://github.com/gusvalenzuela/art-garden-bc"><i class="fa fa-github"></i></a>
+						<a href="/"><i class="fa fa-instagram"></i></a>
+						<a href="/"><i class="fa fa-twitter"></i></a>
+						<a href="/"><i class="fa fa-pinterest"></i></a>
+					</li>
+					<li><br></li>
+					<li>
+						<p style="margin: 0;" class="black-text">Source Code:</p>
+					</li>
+					{{!-- <li><a href="https://github.com/gusvalenzuela/art-garden-bc">github.com.../art-garden-bc</a> --}}
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col s12">
+
+			<p style="margin: .3em 0;">2020 Copyright - All Rights Reserved</p>
+		</div>
+		{{!-- </div> --}}
+		{{!-- <div class="footer-copyright">
+			<div class="container">
+				2020 Copyright - All Rights Reserved
+				<a class="grey-text text-lighten-4 right" href="#!">Terms of Service</a>
+			</div>
+		</div> --}}
+	</footer>
+
+	{{!-- scripts  --}}
+	<script>
+		let setContractBtnLeft = `calc(-${$(`#open-request-button`).outerWidth() + `px`} + 2.5em)`
+
+		$(window).scroll(function () {
+			if ($(window).scrollTop() + $(window).height() > $(document).height() - 75) {
+				// do something once user reaches end of scroll (ex. show/hide)
+
+			} else {
+				// else do something else (ex. show/hide)
+			}
+		});
+
+		$(`#nav-login-btn`).on(`click`, event => {
+			event.stopPropagation()
+
+			const loginBtn = $(`#nav-login-btn`)
+			const loginModal = event.target.nextElementSibling
+
+			$(`#login-modal`).css({
+				left: loginBtn.position().left - 320 + `px`,			// 300 px of modal width (set in css) + some change
+			})
+
+			if (loginModal.style.display === `block`) {
+				loginModal.style.display = `none`
+			} else {
+				loginModal.style.display = `block`
+			}
+
+		})
+
+		// setting the position of the new contract button in relation to navbar height
+		$(`#open-request-button`).css({
+			top: $(`.nav-wrapper`).outerHeight() + 24 + `px`,	// RIP Kobe
+			right: setContractBtnLeft,
+		})
+
+		$(`#open-request-button`).on(`mouseenter`, e => {
+			e.stopPropagation()
+			$(`#open-request-button`).css({
+				right: 0,
+			})
+		})
+		$(`#open-request-button`).on(`mouseleave`, e => {
+			e.stopPropagation()
+			$(`#open-request-button`).css({
+				right: setContractBtnLeft,
+			})
+		})
+	</script>
+</body>
+
+</html>

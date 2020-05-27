@@ -1,0 +1,21 @@
+<div class="container">
+    <h1 class="center-align">Welcome to artGarden!</h1>
+    <div class="row">
+        <span class="col s12 l3">
+        </span>
+        <div class="center-align col s12 l6">
+            <form id="signin" name="signin" method="post" action="/signin">
+                <label for="email" class="left-align" >Email Address</label>
+                <input class="text" name="email" type="text" />
+                <label for="password" class="left-align" >Password</label>
+                <input name="password" type="password" />
+                <input class="btn" type="submit" value="Sign In" />
+            </form>
+            <p>(Click <a href="/signup">here</a> to make an account)</p>
+            {{!-- <a href="/signup" class="btn" style="margin: 1em;">Sign up!</a> --}}
+        </div>
+        <span class="col s12 l3">
+        </span>
+    </div>
+
+</div>

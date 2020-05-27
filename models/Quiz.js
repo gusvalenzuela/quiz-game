@@ -5,23 +5,24 @@ const Schema = mongoose.Schema;
 const QuizSchema = new Schema({
   name: {
     type: String,
-    unique: true
+    unique: true,
+  },
+  difficulty: {
+    type: String,
   },
   category: {
     type: Number,
     required: true,
-    unique: true
   },
   hi_score: {
     type: Number,
-    unique: true
   },
   scores: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Score"
-    }
-  ]
+      ref: "Score",
+    },
+  ],
 });
 
 const Quiz = mongoose.model("Quiz", QuizSchema);
