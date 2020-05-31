@@ -91,17 +91,22 @@
           id="container-col"
         >
           <!-- grade , time, question, etc. display row -->
-          <div class="row mb-2 justify-content-center" style="height: auto;">
+          <div class="row mb-2 justify-content-center" id="count-penalty-time-display-row" style="height: auto;">
             <!-- row with three columns:  -->
-            <div class="col top-row bg-grv" id="question-count"></div>
+
+            <div class="col top-row left-row bg-grv" id="question-count-parent">
+              <i style="font-size: 1.669rem;" class="fa fa-question-circle-o"></i>
+              <span id="question-count"></span>
+            </div>
             <div class="col top-row-center" id="center-display">
               <div class="row" id="penalty-display"></div>
             </div>
-            <div class="col top-row bg-grv">
-              <div id="time-display"></div>
+            <div class="col top-row bg-grv" id="time-display-parent">
+              <i style="font-size: 1.669rem;" class="fa fa-clock-o"></i>
+              <span id="time-display"></span>
             </div>
           </div>
-          <div class="row justify-content-between">
+          <div class="row justify-content-between" id="question-text-parent">
             <div
               class="col text-white question align-items-center py-2"
               id="question-text"
@@ -114,17 +119,6 @@
             role="group"
             aria-label="answer-group"
           ></div>
-        </div>
-      </div>
-      <div class="end-screen row justify-content-center" style="display: none;">
-        <div class="col-11 col-md-8 col-lg-6 top-wrap">
-          <div class="row"></div>
-          <div class="row justify-content-center">
-            <div
-              class="col text-white question align-items-center py-2"
-              id="submit-initials-row"
-            ></div>
-          </div>
         </div>
       </div>
     </main>
@@ -168,8 +162,8 @@
       crossorigin="anonymous"
     ></script>
     <!-- own JS  -->
-    <script defer src="./js/init.js"></script>
-    <script defer src="./js/questions.js" id="questions-script"></script>
+    <!-- <script defer src="./js/init.js"></script>
+    <script defer src="./js/questions.js" id="questions-script"></script> -->
     <script defer src="./js/script-prime.js"></script>
   </body>
 </html>
