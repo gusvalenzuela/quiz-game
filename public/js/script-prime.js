@@ -476,9 +476,13 @@ const endGame = (e) => {
   answerGroup.remove();
   // gradeDisplay.remove();
   $(`#question-count-parent`).remove();
-
   centerDisplay.remove();
   questionText.innerHTML = ``;
+
+  $(mainContainer).empty();
+  const scoreScreen = $(
+    '<div class="row text-white justify-content-center score-screen">'
+  );
 
   // in the event a penalty brings the total time to under 0, set score to 0
   if (t < 0) {
@@ -487,31 +491,29 @@ const endGame = (e) => {
     score = t;
   }
 
-  console.log(`Time left @ end of game: ${t}`);
-
   if (t > 0) {
     // const submitInitialsRow = `#submit-initials-row`;
 
-    $(quizTimeDisplay)
-      .attr(`style`, `font-color: white;`)
-      .html(`Final Score: ${score}`);
-    const form = $(`<form id="initials-form">`);
-    const inputLabel = $(`<label for="#user-initials">`).text(
-      `Enter your initials:`
+    const form = $(`<form id="initials-form" class="col-12">`);
+    const scoreTally = $(`<div>`).html(
+      `<h4>CONGRATULATIONS!</h4><h4>SCORE: ${score}</h4>`
     );
-    const inputText = $(`<input autocomplete="false">`)
+    const inputLabel = $(`<h5>`).text(`Enter your initials:`);
+    const inputText = $(
+      `<input class="user-initials-input" autocomplete="false" placeholder="---">`
+    )
       .attr(`type`, `text`)
-      .attr(`style`, `text-transform: uppercase`)
       .attr(`id`, `user-initials`)
       .attr(`name`, `user-initials`)
-      .attr(`class`, `col-12 m-1 text-center`)
       .attr(`maxlength`, `3`);
     const submitBtn = $(
-      `<input class="m-1 btn btn-light btn-sm rounded-0" value="Submit" type="submit" role="submit">`
+      `<input class="m-1 btn btn-dark btn-sm rounded-0" value="Submit" type="submit" role="submit">`
     );
+
     form.append(inputLabel, inputText, submitBtn);
-    $(questionText).append(form, $(`<hr>`));
-    userInput = document.querySelector(`#user-initials`);
+    $(scoreScreen).append(scoreTally, form, $(`<hr>`));
+
+    $(mainContainer).append(scoreScreen);
 
     $(`#initials-form`).on(`submit`, function (e) {
       $(`#time-display-parent`).removeClass(`bg-grv`);
@@ -519,7 +521,7 @@ const endGame = (e) => {
       if (inputText.val().trim() === "") {
         alert(`Please enter your initials (Max: 3 Characters)`);
       } else {
-        enterScoreToDB();
+        enterScoreToDB(inputText.val().trim());
         // thankForSubmission();
       }
     });
@@ -532,9 +534,9 @@ const endGame = (e) => {
   // console.log(this)
   // hiScoreList();
 };
-const enterScoreToDB = () => {
+const enterScoreToDB = (initials) => {
   let newScore = {
-    initials: userInput.value.trim().toUpperCase(),
+    initials: initials.trim().toUpperCase(),
     score: score,
     category: $(`#category-name`).data(`catId`),
     category_name: $(`#category-name`).data(`catName`),
@@ -542,7 +544,7 @@ const enterScoreToDB = () => {
     dateEntered: Date.now(),
   };
 
-  $.post(`/submit`, newScore, (results) => {
+  $.post(`/submit`, newScore, () => {
     // console.log(`scores upserted:`, results.upserted);
     populateScores(newScore);
   });
@@ -551,41 +553,47 @@ const enterScoreToDB = () => {
 const populateScores = (newscore) => {
   $(`#question-text-parent`).remove();
   $(`#count-penalty-time-display-row`).remove();
+  // window.location.href = `/scores/diff/${newscore.difficulty}/cat/${newscore.category}`;
 
   $.get(
-    `/api/hiscores/${newscore.difficulty}/${newscore.category}`,
+    `/api/scores/${newscore.difficulty}/${newscore.category}`,
     (storedScores) => {
-      let scoreContainer = $(
-        `<ul class="row text-white text-center py-2" id="high-score-list" data-difficulty="${newscore.difficulty}" data-category="${newscore.category}">`
+      $(`.score-screen`).remove();
+
+      let scoreTable = $(
+        `<table class="high-score-table" id="high-score-table" data-difficulty="${newscore.difficulty}" data-category="${newscore.category}">`
       );
-      console.log(storedScores);
-      $(mainContainer).append(scoreContainer);
-      highScoreDiv = document.querySelector(`#high-score-list`);
+      let scoreTableHeader = $(`<tr class="high-score-table-body">`)
+        .append($(`<th>`).text(`Rank`))
+        .append($(`<th>`).text(`Score`))
+        .append($(`<th>`).text(`# Correct`))
+        .append($(`<th>`).text(`Initials`));
 
+      // console.log(storedScores);
       // making h4 tag with the score list header
-      var h4 = document.createElement(`h4`);
-      h4.setAttribute(`class`, `text-center col-12`);
-      h4.textContent = `HIGH SCORES`;
-      highScoreDiv.appendChild(h4);
+      var h4 = $(`<h4>`).text(`HIGH SCORES`);
+      $(mainContainer).append(h4, scoreTable.append(scoreTableHeader));
 
-      storedScores.forEach((score) => {
-        var li = document.createElement(`li`);
+      storedScores.forEach((score, index) => {
+        let tr = $(`<tr>`).attr(`data-score-id`, score._id);
+        var tdA = $(`<td>`);
+        var tdB = $(`<td>`);
+        var tdC = $(`<td>`);
+        var tdD = $(`<td>`);
         var icon = document.createElement(`span`);
-        var span = document.createElement(`span`);
-        li.setAttribute(`class`, `text-center m-0 col-12`);
-        li.setAttribute(`data-score-id`, score._id); // tie ID to index
         icon.setAttribute(`class`, `fa fa-close mx-2`);
         icon.setAttribute(`style`, `font-size:14px`);
         icon.setAttribute(`data-score-id`, score._id);
         icon.setAttribute(`title`, `close-icon`);
 
-        // score = parseInt(`0`+score)
-        li.append(span, icon);
-        span.textContent = score.initials + ` ` + score.score;
-        scoreContainer.append(li);
+        tdA.text(`${index + 1}.`);
+        tdB.text(`${score.score}`);
+        tdC.text(`${score.correct_answers || 5}`);
+        tdD.text(`${score.initials}`);
+        $(scoreTable).append($(tr).append(tdA, tdB, tdC, tdD));
       });
 
-      highScoreDiv.addEventListener(`click`, function (event) {
+      $(scoreTable).on(`click`, function (event) {
         // event.stopPropagation()
         var el = event.target;
 
@@ -602,7 +610,7 @@ const populateScores = (newscore) => {
               type: "DELETE",
               success: function (result) {
                 console.log(`deleted ${result.deletedCount} records`);
-                window.location.href = '/'
+                window.location.href = "/";
               },
             });
           }

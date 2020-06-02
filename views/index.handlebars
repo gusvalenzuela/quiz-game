@@ -1,21 +1,67 @@
-<div class="container">
-    <h1 class="center-align">Welcome to artGarden!</h1>
-    <div class="row">
-        <span class="col s12 l3">
-        </span>
-        <div class="center-align col s12 l6">
-            <form id="signin" name="signin" method="post" action="/signin">
-                <label for="email" class="left-align" >Email Address</label>
-                <input class="text" name="email" type="text" />
-                <label for="password" class="left-align" >Password</label>
-                <input name="password" type="password" />
-                <input class="btn" type="submit" value="Sign In" />
-            </form>
-            <p>(Click <a href="/signup">here</a> to make an account)</p>
-            {{!-- <a href="/signup" class="btn" style="margin: 1em;">Sign up!</a> --}}
+{{!-- loading screen holder  --}}
+<div class="loading-screen col justify-content-center"></div>
+{{!-- selection screen holder wrapped in a form --}}
+<form action="" id="quiz-options-form">
+    <div class="selection-screen">
+        <div class="row justify-content-center">
+            <div class="input-group mb-3 col px-3" id="quiz-category-div">
+                <div class="input-group-prepend">
+                    <label class="input-group-text rounded-0" for="inputGroupSelect01">Category:
+                    </label>
+                </div>
+            </div>
         </div>
-        <span class="col s12 l3">
-        </span>
+        <div class="row justify-content-center">
+            <div class="input-group mb-3 col px-3" id="quiz-difficulty-div">
+                <div class="input-group-prepend">
+                    <label class="input-group-text rounded-0" for="inputGroupSelect02">Difficulty:
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="mb-3 col-6" id="play-button-div"></div>
+        </div>
+        <div class="row justify-content-center mt-3">
+            <p class="random">
+               hiHandlebars Or play a random category on:<br />
+                <span class="random-modes" id="easy-random">easy</span>,
+                <span class="random-modes" id="medium-random">medium</span>,
+                <span class="random-modes" id="hard-random">hard</span>.
+            </p>
+        </div>
     </div>
+</form>
 
+{{!-- category name div this persists after quiz starts --}}
+<div class="category-row row justify-content-center">
+    <b class="col-12 category-name" id="category-name"></b>
+</div>
+{{!-- play screen, where quiz game is played --}}
+<div class="play-screen row justify-content-center">
+    {{!-- const mainContainer --}}
+    <div class="col-11 col-md-8 col-lg-6 text-break text-wrap text-center top-wrap p-3" id="container-col">
+        {{!-- grade , time, question, etc. display row --}}
+        <div class="row mb-2 justify-content-center" id="count-penalty-time-display-row" style="height: auto;">
+            {{!-- row with three columns:  --}}
+
+            <div class="col top-row left-row bg-grv" id="question-count-parent">
+                <i style="font-size: 1.669rem;" class="fa fa-question-circle-o"></i>
+                <span id="question-count"></span>
+            </div>
+            <div class="col top-row-center" id="center-display">
+                <div class="row" id="penalty-display"></div>
+            </div>
+            <div class="col top-row bg-grv" id="time-display-parent">
+                <i style="font-size: 1.669rem;" class="fa fa-clock-o"></i>
+                <span id="time-display"></span>
+            </div>
+        </div>
+        <div class="row justify-content-between" id="question-text-parent">
+            <div class="col text-white question align-items-center py-2" id="question-text"></div>
+        </div>
+
+        <div id="answer-group" class="row btn-group-vertical answer-group w-100" role="group" aria-label="answer-group">
+        </div>
+    </div>
 </div>

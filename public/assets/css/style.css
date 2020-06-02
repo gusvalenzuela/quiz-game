@@ -16,7 +16,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
-h4{
+h4 {
   word-break: normal;
 }
 
@@ -114,7 +114,7 @@ h4{
   color: white;
   font-size: 2.25em;
   font-weight: 700;
-  padding: .2em .5em;
+  padding: 0.2em 0.5em;
   line-height: 1.5em;
 }
 
@@ -143,14 +143,31 @@ h4{
   font-size: 18px;
   padding: 1em;
 }
+#initials-form {
+  text-align: center;
+  border-top: 1px dashed;
+  margin-top: 1.1rem;
+}
+#initials-form > * {
+  margin: 1rem auto;
+}
 
-/* #user-initials{
-      width: 75px;
-  
-  } */
+.user-initials-input {
+  color: #ffffff;
+  display: block;
+  background: transparent;
+  margin: auto;
+  width: 3.3rem !important;
+  text-align: center;
+  text-transform: uppercase;
+}
 
-#high-score-list {
-  background: rgba(0, 174, 255, 0.48);
+.high-score-table {
+  color: #ffffff;
+  background: transparent;
+  text-align: left;
+  margin: auto;
+  width: 100%;
 }
 
 .submit-button {
@@ -167,7 +184,6 @@ h4{
   color: white;
   font-size: 1em;
   text-align: center;
-
 }
 #easy-random {
   color: rgb(0, 156, 0);
