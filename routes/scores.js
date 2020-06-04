@@ -2,8 +2,11 @@ const { Score, Quiz } = require(`../models`);
 
 module.exports = function (app) {
   app.get("/api/scores/:difficulty/:category", ({ params }, res) => {
+
+    // console.log(`\n\n`,Number(params.category))
+
     Score.where("category.id")
-      .equals(params.category)
+      .equals(Number(params.category))
       .where("category.difficulty")
       .equals(params.difficulty)
       .sort({ score: -1 })

@@ -26,8 +26,8 @@ const ScoreSchema = new Schema({
       type: String,
     },
   },
-  questions: {
-    data: [],
+  quiz: {
+    questions: [],
     incorrect: {
       type: Number,
     },
