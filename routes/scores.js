@@ -2,8 +2,10 @@ const { Score, Quiz } = require(`../models`);
 
 module.exports = function (app) {
   app.get("/api/scores/:difficulty/:category", ({ params }, res) => {
-    Score.where(`category`, Number(params.category))
-      .where(`difficulty`, params.difficulty)
+    Score.where("category.id")
+      .equals(params.category)
+      .where("category.difficulty")
+      .equals(params.difficulty)
       .sort({ score: -1 })
       .then((dbScores) => {
         res.json(dbScores);
@@ -42,9 +44,9 @@ module.exports = function (app) {
   app.post("/submit/", ({ body }, res) => {
     // creating a "unique" identifier for each pool of scores
     // each category will have 3 pools corresponding to difficulties
-    var quizType = `${body.category_name.slice(0, 7).toLowerCase()}-${
-      body.category
-    }-${body.difficulty}`;
+    var quizType = `${body.category.name.slice(0, 7).toLowerCase()}-${
+      body.category.num
+    }-${body.category.difficulty}`;
 
     // create a new document in Score collection
     Score.create(body)

@@ -26,7 +26,6 @@ const quizOptionsForm = document.querySelector(`#quiz-options-form`);
 const questionText = document.querySelector(`#question-text`);
 const input = document.createElement(`input`);
 const button = document.createElement(`button`);
-
 let qCount = 0;
 // var timesPlayed = 0     // to show on navBar, maybe; it's classified
 let timer = 256;
@@ -36,6 +35,7 @@ let correctCount = 0;
 let incorrectCount = 0;
 let score = timer;
 let currentSet = [];
+let questionsBackup = [];
 let interval;
 let userAnswer,
   correct,
@@ -47,7 +47,10 @@ let userAnswer,
   t,
   storedInitials,
   currentRightSound,
-  currentWrongSound;
+  currentWrongSound,
+  catDifficulty,
+  catID,
+  catName;
 let submit = 0;
 let rightAnswerSound = new Audio(currentRightSound);
 let wrongAnswerSound = new Audio(currentWrongSound);
@@ -131,13 +134,15 @@ function pullTriviaQuestions(
         decodeURIComponent(data)
       );
       choices.push(decodeURIComponent(item.correct_answer));
-      let itemQues = new QuestionsFull(
-        decodeURIComponent(item.question),
-        decodeURIComponent(item.correct_answer),
-        choices
-      );
+      let itemQues = {
+        title: decodeURIComponent(item.question),
+        answer: decodeURIComponent(item.correct_answer),
+        choices: choices,
+      };
       questions.push(itemQues);
+      questionsBackup.push(itemQues);
     });
+
     var colorCodeDifficulty = `green`;
     if (difficultyChosen.toLowerCase() === `hard`) {
       colorCodeDifficulty = `red`;
@@ -359,8 +364,14 @@ function changeQuestion() {
 
   $(answerGroup).on(`click`, gradeAnswer);
 }
+
 function playQuiz() {
   const qs = questions;
+  correctCount = 0;
+  incorrectCount = 0;
+  catDifficulty = $(`#category-name`).data(`catDifficulty`);
+  catID = $(`#category-name`).data(`catId`);
+  catName = $(`#category-name`).data(`catName`);
 
   // randomizing the order of questions shown each time the quiz is loaded
   for (i = qs.length; i > 0; i--) {
@@ -369,6 +380,7 @@ function playQuiz() {
     qs.splice([r], 1); // removing question from working set (until there are none left to grab)
   }
   console.log(`Let's play!`);
+
   generateBtns();
   clear();
   changeQuestion();
@@ -526,8 +538,7 @@ const endGame = (e) => {
       }
     });
   } else {
-    let elementToRemove = $(`#question-text`)[0].parentElement;
-    $(elementToRemove).remove();
+    $(mainContainer).append($(`<h2>`).text(`Better Luck Next Time!`));
   }
 
   // generateReportCard()
@@ -535,89 +546,94 @@ const endGame = (e) => {
   // hiScoreList();
 };
 const enterScoreToDB = (initials) => {
+  // console.log(`questions`, questionsBackup);
   let newScore = {
     initials: initials.trim().toUpperCase(),
     score: score,
-    category: $(`#category-name`).data(`catId`),
-    category_name: $(`#category-name`).data(`catName`),
-    difficulty: $(`#category-name`).data(`catDifficulty`),
+    category: {
+      name: catName,
+      id: catID,
+      difficulty: catDifficulty,
+    },
     dateEntered: Date.now(),
+    questions: {
+      data: questionsBackup,
+      correct: correctCount,
+      incorrect: incorrectCount,
+      total: correctCount + incorrectCount,
+    },
   };
 
-  $.post(`/submit`, newScore, () => {
-    // console.log(`scores upserted:`, results.upserted);
+  $.post(`/submit`, newScore, (res) => {
+    console.log(`scores upserted:`, res);
     populateScores(newScore);
   });
 };
 
-const populateScores = (newscore) => {
+const populateScores = () => {
   $(`#question-text-parent`).remove();
   $(`#count-penalty-time-display-row`).remove();
-  // window.location.href = `/scores/diff/${newscore.difficulty}/cat/${newscore.category}`;
 
-  $.get(
-    `/api/scores/${newscore.difficulty}/${newscore.category}`,
-    (storedScores) => {
-      $(`.score-screen`).remove();
+  $.get(`/api/scores/${catDifficulty}/${catID}`, (storedScores) => {
+    $(`.score-screen`).remove();
 
-      let scoreTable = $(
-        `<table class="high-score-table" id="high-score-table" data-difficulty="${newscore.difficulty}" data-category="${newscore.category}">`
-      );
-      let scoreTableHeader = $(`<tr class="high-score-table-body">`)
-        .append($(`<th>`).text(`Rank`))
-        .append($(`<th>`).text(`Score`))
-        .append($(`<th>`).text(`# Correct`))
-        .append($(`<th>`).text(`Initials`));
+    let scoreTable = $(
+      `<table class="high-score-table" id="high-score-table" data-difficulty="${catDifficulty}" data-category="${catName}">`
+    );
+    let scoreTableHeader = $(`<tr class="high-score-table-header">`)
+      .append($(`<th>`).text(`RANK`))
+      .append($(`<th>`).text(`SCORE`))
+      .append($(`<th>`).text(`NAME`))
+      .append($(`<th>`).text(`CORRECT`));
 
-      // console.log(storedScores);
-      // making h4 tag with the score list header
-      var h4 = $(`<h4>`).text(`HIGH SCORES`);
-      $(mainContainer).append(h4, scoreTable.append(scoreTableHeader));
+    console.log(storedScores);
+    // making h4 tag with the score list header
+    var h4 = $(`<h4>`).text(`HIGH SCORES`);
+    $(mainContainer).append(h4, scoreTable.append(scoreTableHeader));
 
-      storedScores.forEach((score, index) => {
-        let tr = $(`<tr>`).attr(`data-score-id`, score._id);
-        var tdA = $(`<td>`);
-        var tdB = $(`<td>`);
-        var tdC = $(`<td>`);
-        var tdD = $(`<td>`);
-        var icon = document.createElement(`span`);
-        icon.setAttribute(`class`, `fa fa-close mx-2`);
-        icon.setAttribute(`style`, `font-size:14px`);
-        icon.setAttribute(`data-score-id`, score._id);
-        icon.setAttribute(`title`, `close-icon`);
+    storedScores.forEach((score, index) => {
+      let tr = $(`<tr>`).attr(`data-score-id`, score._id);
+      var tdA = $(`<td>`);
+      var tdB = $(`<td>`);
+      var tdC = $(`<td>`);
+      var tdD = $(`<td>`);
+      var icon = document.createElement(`span`);
+      icon.setAttribute(`class`, `fa fa-close mx-2`);
+      icon.setAttribute(`style`, `font-size:14px`);
+      icon.setAttribute(`data-score-id`, score._id);
+      icon.setAttribute(`title`, `close-icon`);
 
-        tdA.text(`${index + 1}.`);
-        tdB.text(`${score.score}`);
-        tdC.text(`${score.correct_answers || 5}`);
-        tdD.text(`${score.initials}`);
-        $(scoreTable).append($(tr).append(tdA, tdB, tdC, tdD));
-      });
+      tdA.text(`${index + 1}.`);
+      tdB.text(`${String(score.score).padStart(7, "0") || `N/A`}`);
+      tdC.text(`${score.initials || `N/A`}`);
+      tdD.text(`${score.questions.correct}/${score.questions.total}`);
+      $(scoreTable).append($(tr).append(tdA, tdB, tdC, tdD));
+    });
 
-      $(scoreTable).on(`click`, function (event) {
-        // event.stopPropagation()
-        var el = event.target;
+    $(scoreTable).on(`click`, function (event) {
+      // event.stopPropagation()
+      var el = event.target;
 
-        if (el.title === `close-icon`) {
-          confirm(
-            `are you sure you want to remove this record?\ncannot be undone.`
-          );
+      if (el.title === `close-icon`) {
+        confirm(
+          `are you sure you want to remove this record?\ncannot be undone.`
+        );
 
-          if (!confirm) {
-            return;
-          } else {
-            $.ajax({
-              url: "/api/deletescore/" + $(el).data(`scoreId`),
-              type: "DELETE",
-              success: function (result) {
-                console.log(`deleted ${result.deletedCount} records`);
-                window.location.href = "/";
-              },
-            });
-          }
+        if (!confirm) {
+          return;
+        } else {
+          $.ajax({
+            url: "/api/deletescore/" + $(el).data(`scoreId`),
+            type: "DELETE",
+            success: function (result) {
+              console.log(`deleted ${result.deletedCount} records`);
+              window.location.href = "/";
+            },
+          });
         }
-      });
-    }
-  );
+      }
+    });
+  });
 };
 
 const thankForSubmission = () => {

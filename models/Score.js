@@ -15,14 +15,28 @@ const ScoreSchema = new Schema({
   score: {
     type: Number,
   },
-  difficulty: {
-    type: String,
-  },
   category: {
-    type: Number,
+    name: {
+      type: String,
+    },
+    id: {
+      type: Number,
+    },
+    difficulty: {
+      type: String,
+    },
   },
-  category_name: {
-    type: String,
+  questions: {
+    data: [],
+    incorrect: {
+      type: Number,
+    },
+    correct: {
+      type: Number,
+    },
+    total: {
+      type: Number,
+    },
   },
   dateEntered: {
     type: Date,
