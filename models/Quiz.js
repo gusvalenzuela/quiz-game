@@ -14,8 +14,8 @@ const QuizSchema = new Schema({
     type: Number,
     required: true,
   },
-  hi_score: {
-    type: Number,
+  category_name: {
+    type: String,
   },
   scores: [
     {

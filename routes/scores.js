@@ -48,7 +48,7 @@ module.exports = function (app) {
     // creating a "unique" identifier for each pool of scores
     // each category will have 3 pools corresponding to difficulties
     var quizType = `${body.category.name.slice(0, 7).toLowerCase()}-${
-      body.category.num
+      body.category.id
     }-${body.category.difficulty}`;
 
     // create a new document in Score collection
@@ -59,9 +59,9 @@ module.exports = function (app) {
           // Syntax: { $and: [ { <expression1> }, { <expression2> } , ... , { <expressionN> } ] }
           { name: quizType },
           {
-            category: body.category,
-            difficulty: body.difficulty,
-            category_name: body.category_name,
+            category: body.category.id,
+            difficulty: body.category.difficulty,
+            category_name: body.category.name,
             $push: { scores: scores._id },
           },
           { upsert: true }

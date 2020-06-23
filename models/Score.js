@@ -8,7 +8,7 @@ const ScoreSchema = new Schema({
     trim: true,
     required: "Initials are required",
     validate: [
-      ({ length }) => length > 1 && length < 4,
+      ({ length }) => length > 0 && length < 4,
       "Initials need to be between 1 and 3 characters long.",
     ],
   },

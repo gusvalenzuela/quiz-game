@@ -65,7 +65,7 @@ class QuestionsFull {
 }
 
 let quizData = {
-  name: catID + "-" + catDifficulty + "-" + catName,
+  name: "",
   questions: [],
 };
 
@@ -82,6 +82,7 @@ $(window).on("load", function () {
       `<h1 style="color: white;">LOADING CATEGORIES...</h1>`
     );
     getTriviaCategories();
+
   }
   function getTriviaCategories() {
     $.ajax({
@@ -126,7 +127,7 @@ $(window).on("load", function () {
 
       if (r.response_code == 1) {
         console.log(`something went wrong, response code: `, r.response_code);
-        $(`.play-screen`).html(
+        $(`#main-main`).html(
           `<h1 style="color:white; padding:1em;">OOPS SOMETHING WENT WRONG, REFRESHING THE PAGE.</h1>`
         );
         setTimeout(() => {
@@ -389,6 +390,7 @@ $(window).on("load", function () {
     catDifficulty = $(`#category-name`).data(`catDifficulty`);
     catID = $(`#category-name`).data(`catId`);
     catName = $(`#category-name`).data(`catName`);
+    quizData.name = catID + "-" + catName.toLowerCase() + "-" + catDifficulty.toLowerCase();
 
     $(mainContainer).show(); // hidden while pulling trivia questions
 
@@ -558,7 +560,7 @@ $(window).on("load", function () {
         if (inputText.val().trim() === "") {
           alert(`Please enter your initials (Max: 3 Characters)`);
         } else {
-          enterScoreToDB(inputText.val().trim());
+          enterScoreToDB(inputText.val().trim().toUpperCase());
           // thankForSubmission();
         }
       });
@@ -573,11 +575,11 @@ $(window).on("load", function () {
   const enterScoreToDB = (initials) => {
     // console.log(`questions`, quizData);
     let newScore = {
-      initials: initials.trim().toUpperCase(),
+      initials: initials,
       score: score,
       category: {
         name: catName,
-        id: catID,
+        id: Number(catID),
         difficulty: catDifficulty,
       },
       dateEntered: Date.now(),
@@ -588,9 +590,7 @@ $(window).on("load", function () {
         total: correctCount + incorrectCount,
       },
     };
-
     $.post(`/submit`, newScore, (res) => {
-      console.log(`scores upserted:`, res);
       populateScores(newScore);
     });
   };
