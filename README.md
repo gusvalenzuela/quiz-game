@@ -2,7 +2,7 @@
 
 ## Description
 
-- Timed quiz with time penalty for wrong answers and time added for correct ones. Final score is total time left at end of quiz. A listing of all previous scores received will be shown on the final screen.
+- Timed quiz with time penalty for wrong answers and time added for correct ones. Final score is total time left at end of quiz. 
 
 - ![Question Sample](assets\images\screenshot04.PNG)
 
@@ -18,7 +18,7 @@
 
 ## Hi Score List
 
-- A final screen appears at the end of the game where you can enter your initials and save the score. You can also view any previous scores played on the current browser/machine and their associated initials.
+- A final screen appears at the end of the game where you can enter your initials and save the score. You can also view any previous scores ranked highest-to-lowest for the category and difficulty played.
 
 ### TODOs
 - Sort HIGH SCORES list: highest to lowest
