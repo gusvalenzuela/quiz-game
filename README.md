@@ -2,11 +2,9 @@
 
 ## Description
 
-- Timed quiz with time penalty for wrong answers and time added for correct ones. Final score is total time left at end of quiz. 
+Timed quiz with time penalty for wrong answers and time added for correct ones. Final score is total time left at end of quiz. 
 
-- ![Question Sample](assets\images\screenshot04.PNG)
-
-- URL: https://quiz-down.herokuapp.com/
+PLAY: https://quiz-down.herokuapp.com/
 
 ## Instructions
 
