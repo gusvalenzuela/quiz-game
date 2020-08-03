@@ -3,11 +3,16 @@
 
 ## [PLAY!](https://quiz-down.herokuapp.com/)
 
+![screenshot](./assets/images/quizdown-capture1.PNG)
+
 ## How to Play:
 - Choose from one of over 20 categories! Select a difficulty and click PLAY to begin.
 - Or, if you're feeling spicy, click on one of the 3 available difficulties to select a category at random.
 - A timer will begin and a series of questions will be asked. Answer correctly and you'll be rewarded with an extra 10 seconds on the clock. Get it wrong and you lose 15 seconds! So choose carefully. And watch the clock, once it runs out the quiz is over and you will be awarded 0 points (womp womp). So hurry!
 - Have fun!
+
+![screenshot](./assets/images/quizdown-capture2.PNG)
+
 
 ### Hi Score List
 
@@ -29,4 +34,4 @@
 - Adding T/F questions
 - add more sound fx / music
 
-# Copyright 2020 \\ Gus Valenzuela
+### Copyright 2020 \\ Gus Valenzuela
