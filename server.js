@@ -1,7 +1,7 @@
 const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
-const path = require("path");
+// const path = require("path");
 const scoreRoutes = require("./routes/scores.js");
 const db = require("./models");
 const app = express();
@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/quizdowndb", {
+mongoose.connect(process.env.MONGODB_URX || "mongodb://localhost/quizdowndb", {
   useNewUrlParser: true,
 });
 
