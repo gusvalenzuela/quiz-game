@@ -1,5 +1,7 @@
-# QUIZDown⁉
+# QUIZDown⁉ v 2.0
 > Timed quiz with time penalty for wrong answers and time added for correct ones. Final score is total time left at end of quiz. 
+
+> Note: [New 3.0 version here!](https://github.com/gusvalenzuela/quizdown)
 
 ## [PLAY!](https://quiz-down.herokuapp.com/)
 
